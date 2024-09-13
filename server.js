@@ -14,18 +14,31 @@ const port = 8080;
 // create a web application
 const app = express();
 
+// load the handlebars for express
+const { engine } = require("express-handlebars");
+
 // define the public directory as 'static'
 app.use(express.static("public"));
 
 // define the default " / " route
 app.get(`/`, (req, res) => {
-  console.log("I recieved a new request, so I am sending back the response");
-  res.send("This is the way");
+  // to log each request of the "/" route
+  //   console.log("I recieved a new request, so I am sending back the response");
+  //   res.send("This is the way");
+  res.render("home.handlebars");
 });
 
-// create a new route to send back an HTML file
-app.get(`/medhub`, (req, res) => {
-  res.sendFile(__dirname + `/views/medhub.html`);
+app.get(`/patients`, (req, res) => {
+  res.render("patients.handlebars");
+});
+
+app.get(`/about`, (req, res) => {
+  //   res.sendFile(__dirname + `/views/medhub.html`);
+  res.render("about.handlebars");
+});
+
+app.get(`/contact`, (req, res) => {
+  res.render("contact.handlebars");
 });
 
 // make the server listen to connections
@@ -34,6 +47,14 @@ app.listen(port, function () {
   // The same thing written with backsticks looks like this:
   // console.log(`The server is listening on port ${port}...`);
 });
+
+/* HANDLEBARS */
+//initialize the engine to be handlebars
+app.engine("handlebars", engine());
+// set handlebars as the view engine
+app.set("view engine", "handlebars");
+// define the views directory as ./views
+app.set("views", "./views");
 
 const dbFile = "test-data.sqlite3.db";
 db = new sqlite3.Database(dbFile);
