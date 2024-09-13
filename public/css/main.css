@@ -1,0 +1,30 @@
+* {
+  font-family: ff-scala-sans-pro, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--dark-blue);
+}
+
+html {
+  --light-blue: #b3eeff;
+  --dark-blue: #02003e;
+}
+
+body {
+  background-color: var(--light-blue);
+  margin-left: 2vw;
+  margin-right: 2vw;
+}
+
+h1 {
+  font-family: ff-scala, sans-serif;
+  font-size: 1.5rem;
+  margin: 1vw;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 1vw;
+  font-weight: 700;
+}
