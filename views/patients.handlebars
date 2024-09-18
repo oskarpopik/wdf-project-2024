@@ -1,2 +1,28 @@
 <p>This is the patients site</p>
-<p>List of patients will be available here</p>
+<h1>List of patients:</h1>
+<div class="patient-list">
+  <ul>
+    {{!-- {{patient}} --}}
+    {{#each patient}}
+      <li>
+        <!-- Patient images were generated using generative AI tool Adobe Firefly -->
+        <img
+          src="/img/patid-{{patid}}.jpg"
+          alt="Picture of the patient {{fname}} {{lname}}"
+          class="patient-image"
+        />
+        {{fname}}
+        {{lname}},
+        {{age}}
+        years old, gender: 
+        {{#if (isEqual gender "Male")}}
+            <span class="patient-male">
+        {{else}}
+            <span class="patient-female">
+        {{/if}} 
+        {{gender}}</span>. Address:
+        {{contact}}. Phone:
+        {{phone}}</li>
+    {{/each}}
+  </ul>
+</div>

@@ -1,25 +1,136 @@
+// ----- PACKAGES -----
 // load the express package in the express variable
 const express = require("express");
-
 // import the built-in fs (File System) module and assign it to the fs constant
 // fs is used to perform various file operations such as reading, writing, updating, and deleting files
 const fs = require("fs");
-
 // load sqlite3
 const sqlite3 = require("sqlite3");
-
-// define the port
-const port = 8080;
-
-// create a web application
-const app = express();
-
 // load the handlebars for express
 const { engine } = require("express-handlebars");
 
-// define the public directory as 'static'
+// ----- APPLICATION -----
+// create a web application
+const app = express();
+
+// ----- PORT -----
+// define the port
+const port = 8080;
+
+// JSON OBJECT
+//
+//
+//
+//
+const patient = [
+  {
+    patid: "1",
+    fname: "Erik",
+    lname: "Svensson",
+    age: 45,
+    gender: "Male",
+    phone: "+46 70 123 4567",
+    contact: "Storgatan 12, 55321 Jönköping",
+  },
+  {
+    patid: "2",
+    fname: "Anna",
+    lname: "Karlsson",
+    age: 32,
+    gender: "Female",
+    phone: "+46 70 234 5678",
+    contact: "Huskvarnavägen 45, 56132 Huskvarna",
+  },
+  {
+    patid: "3",
+    fname: "Lars",
+    lname: "Johansson",
+    age: 61,
+    gender: "Male",
+    phone: "+46 70 345 6789",
+    contact: "Vättergatan 9, 56432 Bankeryd",
+  },
+  {
+    patid: "4",
+    fname: "Maria",
+    lname: "Nilsson",
+    age: 28,
+    gender: "Female",
+    phone: "+46 70 456 7890",
+    contact: "Bäckalyckevägen 67, 55335 Jönköping",
+  },
+  {
+    patid: "5",
+    fname: "Gustav",
+    lname: "Eriksson",
+    age: 54,
+    gender: "Male",
+    phone: "+46 70 567 8901",
+    contact: "Norrahammarsvägen 8, 56231 Norrahammar",
+  },
+  {
+    patid: "6",
+    fname: "Sofia",
+    lname: "Lindström",
+    age: 39,
+    gender: "Female",
+    phone: "+46 70 678 9012",
+    contact: "Visingsövägen 11, 56393 Gränna",
+  },
+  {
+    patid: "7",
+    fname: "Oskar",
+    lname: "Berg",
+    age: 47,
+    gender: "Male",
+    phone: "+46 70 789 0123",
+    contact: "Råslättsvägen 21, 55334 Jönköping",
+  },
+  {
+    patid: "8",
+    fname: "Elin",
+    lname: "Holm",
+    age: 23,
+    gender: "Female",
+    phone: "+46 70 890 1234",
+    contact: "Rosenlundsvägen 13, 56145 Huskvarna",
+  },
+  {
+    patid: "9",
+    fname: "Henrik",
+    lname: "Fransson",
+    age: 80,
+    gender: "Male",
+    phone: "+46 70 901 2345",
+    contact: "Tabergsvägen 5, 56241 Taberg",
+  },
+];
+
+// ----- MIDDLEWARES -----
+// define the public directory as 'static' making it public
 app.use(express.static("public"));
 
+// ----- HANDLEBARS -----
+//initialize the engine to be handlebars
+// The use of helpers: isEqual was adapted from stackoverflow
+// Source: (Pablo Varando, 2018, "Handlebarsjs check if a string is equal to a value", https://stackoverflow.com/a/51976315)
+
+app.engine(
+  "handlebars",
+  engine({
+    helpers: {
+      isEqual: function (a, b) {
+        return a === b;
+      },
+    },
+  })
+);
+// set handlebars as the view engine
+app.set("view engine", "handlebars");
+// define the views directory as ./views
+app.set("views", "./views");
+
+// ----- ROUTES -----
 // define the default " / " route
 app.get(`/`, (req, res) => {
   // to log each request of the "/" route
@@ -29,10 +140,12 @@ app.get(`/`, (req, res) => {
 });
 
 app.get(`/patients`, (req, res) => {
-  res.render("patients.handlebars");
+  const model = { patient };
+  res.render("patients.handlebars", model);
 });
 
 app.get(`/about`, (req, res) => {
+  // not using the res.sendFile function
   //   res.sendFile(__dirname + `/views/medhub.html`);
   res.render("about.handlebars");
 });
@@ -41,6 +154,11 @@ app.get(`/contact`, (req, res) => {
   res.render("contact.handlebars");
 });
 
+app.get("/fika", (req, res) => {
+  res.sendStatus(418);
+});
+
+// ----- LISTEN -----
 // make the server listen to connections
 app.listen(port, function () {
   console.log("The server is listening on port " + port + "...");
@@ -48,13 +166,15 @@ app.listen(port, function () {
   // console.log(`The server is listening on port ${port}...`);
 });
 
-/* HANDLEBARS */
-//initialize the engine to be handlebars
-app.engine("handlebars", engine());
-// set handlebars as the view engine
-app.set("view engine", "handlebars");
-// define the views directory as ./views
-app.set("views", "./views");
+//
+//
+//
+
+/* THIS IS PART OF ONE OF THE EXERCISES */
+/*
+/*
+/*
+/* START */
 
 const dbFile = "test-data.sqlite3.db";
 db = new sqlite3.Database(dbFile);
@@ -120,3 +240,9 @@ app.get("/listpersons", function (req, res) {
     }
   });
 });
+
+/* THIS IS PART OF ONE OF THE EXERCISES */
+/*
+/*
+/*
+/* END */

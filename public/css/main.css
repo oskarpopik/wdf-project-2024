@@ -2,16 +2,22 @@
   font-family: ff-scala-sans-pro, sans-serif;
   font-weight: 400;
   font-style: normal;
-  color: var(--dark-blue);
+  color: var(--navy-blue);
 }
 
 html {
-  --light-blue: #b3eeff;
-  --dark-blue: #02003e;
+  --background-blue: #caf0f8;
+  --light-blue: #90e0ef;
+  --normal-blue: #00b4d8;
+  --dark-blue: #0077b6;
+  --navy-blue: #03045e;
+  --dark-red: #d00000;
+  --green: #005200;
+  --pink: #ff7b9c;
 }
 
 body {
-  background-color: var(--light-blue);
+  background-color: var(--background-blue);
   margin-left: 2vw;
   margin-right: 2vw;
 }
@@ -26,5 +32,19 @@ h1 {
 h2 {
   font-size: 1.5rem;
   margin: 1vw;
+  font-weight: 700;
+}
+
+.patient-image {
+  width: 20%;
+}
+
+.patient-male {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.patient-female {
+  color: var(--pink);
   font-weight: 700;
 }
