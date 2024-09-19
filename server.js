@@ -36,7 +36,7 @@ const patient = [
     patid: "2",
     fname: "Anna",
     lname: "Karlsson",
-    age: 32,
+    age: 72,
     gender: "Female",
     phone: "+46 70 234 5678",
     contact: "Huskvarnavägen 45, 56132 Huskvarna",
@@ -45,7 +45,7 @@ const patient = [
     patid: "3",
     fname: "Lars",
     lname: "Johansson",
-    age: 61,
+    age: 66,
     gender: "Male",
     phone: "+46 70 345 6789",
     contact: "Vättergatan 9, 56432 Bankeryd",
@@ -81,7 +81,7 @@ const patient = [
     patid: "7",
     fname: "Oskar",
     lname: "Berg",
-    age: 47,
+    age: 76,
     gender: "Male",
     phone: "+46 70 789 0123",
     contact: "Råslättsvägen 21, 55334 Jönköping",
@@ -103,6 +103,132 @@ const patient = [
     gender: "Male",
     phone: "+46 70 901 2345",
     contact: "Tabergsvägen 5, 56241 Taberg",
+  },
+  {
+    patid: "10",
+    fname: "Eva",
+    lname: "Olsson",
+    age: 90,
+    gender: "Female",
+    phone: "+46 70 912 3456",
+    contact: "Korsgatan 7, 56789 Jönköping",
+  },
+  {
+    patid: "11",
+    fname: "Ingrid",
+    lname: "Andersson",
+    age: 56,
+    gender: "Female",
+    phone: "+46 70 923 4567",
+    contact: "Storgatan 89, 56133 Huskvarna",
+  },
+  {
+    patid: "12",
+    fname: "Mats",
+    lname: "Larsson",
+    age: 36,
+    gender: "Male",
+    phone: "+46 70 934 5678",
+    contact: "Lindvägen 20, 55332 Jönköping",
+  },
+];
+
+const treatment = [
+  {
+    treatid: "1",
+    description: "Routine check-up and consultation.",
+    startdate: "2024-01-10",
+    enddate: "2024-01-10",
+    medname: "N/A",
+    meddose: "N/A",
+  },
+  {
+    treatid: "2",
+    description: "Management of hypertension.",
+    startdate: "2024-02-15",
+    enddate: "2024-08-15",
+    medname: "Lisinopril",
+    meddose: "10 mg daily",
+  },
+  {
+    treatid: "3",
+    description: "Diabetes management and monitoring.",
+    startdate: "2024-03-01",
+    enddate: "2024-12-01",
+    medname: "Metformin",
+    meddose: "500 mg twice daily",
+  },
+  {
+    treatid: "4",
+    description: "Treatment for seasonal allergies.",
+    startdate: "2024-04-01",
+    enddate: "2024-09-01",
+    medname: "Cetirizine",
+    meddose: "10 mg daily",
+  },
+  {
+    treatid: "5",
+    description: "Osteoporosis management.",
+    startdate: "2024-05-15",
+    enddate: "2025-05-15",
+    medname: "Alendronate",
+    meddose: "70 mg weekly",
+  },
+  {
+    treatid: "6",
+    description: "Management of chronic migraine.",
+    startdate: "2024-06-10",
+    enddate: "2024-12-10",
+    medname: "Topiramate",
+    meddose: "25 mg daily",
+  },
+  {
+    treatid: "7",
+    description: "Heart disease management and monitoring.",
+    startdate: "2024-07-05",
+    enddate: "2025-07-05",
+    medname: "Atorvastatin",
+    meddose: "20 mg daily",
+  },
+  {
+    treatid: "8",
+    description: "Treatment for asthma.",
+    startdate: "2024-08-20",
+    enddate: "2024-11-20",
+    medname: "Albuterol",
+    meddose: "90 mcg inhaled every 4-6 hours as needed",
+  },
+  {
+    treatid: "9",
+    description: "Management of age-related macular degeneration.",
+    startdate: "2024-09-15",
+    enddate: "2025-09-15",
+    medname: "Lucentis",
+    meddose: "One injection every month",
+  },
+  {
+    treatid: "10",
+    description: "Management of arthritis pain.",
+    startdate: "2024-10-10",
+    enddate: "2025-10-10",
+    medname: "Ibuprofen",
+    meddose: "400 mg every 8 hours as needed",
+  },
+  {
+    treatid: "11",
+    description: "Treatment for chronic depression.",
+    startdate: "2024-11-01",
+    enddate: "2025-05-01",
+    medname: "Sertraline",
+    meddose: "50 mg daily",
+  },
+  {
+    treatid: "12",
+    description: "Management of high cholesterol.",
+    startdate: "2024-12-01",
+    enddate: "2025-12-01",
+    medname: "Simvastatin",
+    meddose: "40 mg daily",
   },
 ];
 
@@ -140,8 +266,13 @@ app.get(`/`, (req, res) => {
 });
 
 app.get(`/patients`, (req, res) => {
-  const model = { patient };
-  res.render("patients.handlebars", model);
+  const patientData = { patient };
+  res.render("patients.handlebars", patientData);
+});
+
+app.get(`/treatments`, (req, res) => {
+  const treatmentData = { treatment };
+  res.render("treatments.handlebars", treatmentData);
 });
 
 app.get(`/about`, (req, res) => {

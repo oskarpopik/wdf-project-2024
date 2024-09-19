@@ -1,0 +1,17 @@
+<p>This is the treatments site</p>
+<h1>List of treatments:</h1>
+<div class="treatment-list"></div>
+<ol>
+  {{#each treatment}}
+    <li>
+      {{startdate}}
+      //
+      {{enddate}}
+      //
+      {{description}}
+      //
+      {{medname}}
+      ({{meddose}})
+    </li>
+  {{/each}}
+</ol>
