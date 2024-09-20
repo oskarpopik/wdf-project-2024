@@ -1,5 +1,5 @@
 <p>This is the patients site</p>
-<h1>List of patients:</h1>
+<h2>List of patients:</h2>
 <div class="patient-list">
   <ol>
     {{!-- {{patient}} --}}
@@ -7,22 +7,22 @@
       <li>
         <!-- Patient images were generated using generative AI tool Adobe Firefly -->
         <img
-          src="/img/patid-{{patid}}.jpg"
-          alt="Picture of the patient {{fname}} {{lname}}"
+          src="/img/patid-{{pid}}.jpg"
+          alt="Picture of the patient {{pfname}} {{plname}}"
           class="patient-image"
         />
-        {{fname}}
-        {{lname}},
-        {{age}}
+        {{pfname}}
+        {{plname}},
+        {{page}}
         years old, gender: 
-        {{#if (isEqual gender "Male")}}
+        {{#if (isEqual pgender "Male")}}
             <span class="patient-male">
         {{else}}
             <span class="patient-female">
         {{/if}} 
-        {{gender}}</span>. Address:
-        {{contact}}. Phone:
-        {{phone}}</li>
+        {{pgender}}</span>. Address:
+        {{pcontact}}. Phone:
+        {{pphone}}</li>
     {{/each}}
   </ol>
 </div>

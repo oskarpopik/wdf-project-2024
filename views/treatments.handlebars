@@ -1,17 +1,17 @@
 <p>This is the treatments site</p>
-<h1>List of treatments:</h1>
+<h2>List of treatments:</h2>
 <div class="treatment-list"></div>
 <ol>
   {{#each treatment}}
     <li>
-      {{startdate}}
+      {{tstart}}
       //
-      {{enddate}}
+      {{tend}}
       //
-      {{description}}
+      {{tdesc}}
       //
-      {{medname}}
-      ({{meddose}})
+      {{tmed}}
+      ({{tdose}})
     </li>
   {{/each}}
 </ol>

@@ -8,6 +8,8 @@ const fs = require("fs");
 const sqlite3 = require("sqlite3");
 // load the handlebars for express
 const { engine } = require("express-handlebars");
+// required to get data from POST forms
+const bodyParser = require("body-parser");
 
 // ----- APPLICATION -----
 // create a web application
@@ -272,7 +274,7 @@ function initTableTreatment(db) {
 
   // creates table of treatments at startup
   db.run(
-    "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstar TEXT NOT NULL, tend TEXT NOT NULL, tmed TEXT, tdose TEXT)",
+    "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstart TEXT NOT NULL, tend TEXT NOT NULL, tmed TEXT, tdose TEXT)",
     (error) => {
       if (error) {
         // tests error: display error
@@ -284,7 +286,7 @@ function initTableTreatment(db) {
         // insert the treatments
         treatment.forEach((oneTreatment) => {
           db.run(
-            "INSERT INTO treatment (tid, tdesc, tstar, tend, tmed, tdose) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO treatment (tid, tdesc, tstart, tend, tmed, tdose) VALUES (?, ?, ?, ?, ?, ?)",
             [
               oneTreatment.treatid,
               oneTreatment.description,
@@ -349,6 +351,8 @@ function initTableTreatment(db) {
 // ----- MIDDLEWARES -----
 // define the public directory as 'static' making it public
 app.use(express.static("public"));
+// allows express middleware for processing forms sent using the "post" method
+app.use(express.urlencoded({ extended: true }));
 
 // ----- HANDLEBARS -----
 //initialize the engine to be handlebars
@@ -380,13 +384,37 @@ app.get(`/`, (req, res) => {
 });
 
 app.get(`/patients`, (req, res) => {
-  const patientData = { patient };
-  res.render("patients.handlebars", patientData);
+  // getting data directly from a JSON object variable
+  // const patientData = { patient };
+
+  // getting data from SQLite database
+  db.all("SELECT * FROM patient", (error, listOfPatients) => {
+    if (error) {
+      // display an error in the terminal
+      console.log("ERROR: ", error);
+    } else {
+      // declare patientData as a local variable
+      const patientData = { patient: listOfPatients };
+      res.render("patients.handlebars", patientData);
+    }
+  });
 });
 
 app.get(`/treatments`, (req, res) => {
-  const treatmentData = { treatment };
-  res.render("treatments.handlebars", treatmentData);
+  // getting data directly from a JSON object variable
+  // const treatmentData = { treatment };
+
+  // geting data from SQLite database
+  db.all("SELECT * FROM treatment", (error, listOfTreatments) => {
+    if (error) {
+      // display an error in the terminal
+      console.log("ERROR: ", error);
+    } else {
+      // declare treatmentData as a local variable
+      const treatmentData = { treatment: listOfTreatments };
+      res.render("treatments.handlebars", treatmentData);
+    }
+  });
 });
 
 app.get(`/about`, (req, res) => {
@@ -399,6 +427,10 @@ app.get(`/contact`, (req, res) => {
   res.render("contact.handlebars");
 });
 
+app.get(`/login`, (req, res) => {
+  res.render("login.handlebars");
+});
+
 app.get("/fika", (req, res) => {
   res.sendStatus(418);
 });
@@ -407,9 +439,35 @@ app.get("/fika", (req, res) => {
 // make the server listen to connections
 app.listen(port, function () {
   // create the table with patients and fill it with data
-  initTablePatient(db);
-  initTableTreatment(db);
+  // initTablePatient(db);
+  // initTableTreatment(db);
   console.log("The server is listening on port " + port + "...");
   // The same thing written with backsticks looks like this:
   // console.log(`The server is listening on port ${port}...`);
+});
+
+app.post(`/login`, (req, res) => {
+  // show the route
+  console.log("URL: ", req.url);
+
+  // show the received POST data
+  const postData = JSON.stringify(req.body);
+  console.log("POST data: ", postData);
+
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // show GET results from the URL
+  console.log("Received login/password: " + username + " / " + password);
+
+  // verification if the username and the password were provided
+  if (!username || !password) {
+    return res.status(400).send("Username and password are required to login");
+  }
+
+  //
+  //
+  //
+  // sending a response after login
+  res.send(`Received: Username - ${username}, Password - ${password}`);
 });
