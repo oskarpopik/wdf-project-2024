@@ -19,7 +19,7 @@ const app = express();
 // define the port
 const port = 8080;
 
-const dbFile = "medhub-test-data.sqlite3.db";
+const dbFile = "medhub-db.sqlite3.db";
 db = new sqlite3.Database(dbFile);
 
 function initTablePatient(db) {
@@ -163,6 +163,102 @@ function initTablePatient(db) {
                 console.log("ERROR: ", error);
               } else {
                 console.log("A line was added into the patient table");
+              }
+            }
+          );
+        });
+      }
+    }
+  );
+}
+
+function initTableDoctor(db) {
+  const doctor = [
+    {
+      docid: 1,
+      fname: "John",
+      lname: "Watson",
+      specialization: "General Practice",
+      email: "john.watson@rjl.se",
+    },
+    {
+      docid: 2,
+      fname: "Drake",
+      lname: "Ramoray",
+      specialization: "Neurology",
+      email: "drake.ramoray@rjl.se",
+    },
+    {
+      docid: 3,
+      fname: "Leonard",
+      lname: "McCoy",
+      specialization: "Surgery",
+      email: "leonard.mccoy@rjl.se",
+    },
+    {
+      docid: 4,
+      fname: "Michaela",
+      lname: "Quinn",
+      specialization: "Family Medicine",
+      email: "michaela.quinn@rjl.se",
+    },
+    {
+      docid: 5,
+      fname: "Gregory",
+      lname: "House",
+      specialization: "Diagnostic Medicine",
+      email: "gregory.house@rjl.se",
+    },
+    {
+      docid: 6,
+      fname: "John",
+      lname: "Carter",
+      specialization: "Emergency Medicine",
+      email: "john.carter@rjl.se",
+    },
+    {
+      docid: 7,
+      fname: "Julius",
+      lname: "Hibbert",
+      specialization: "Pediatrics",
+      email: "julius.hibbert@rjl.se",
+    },
+    {
+      docid: 8,
+      fname: "Nick",
+      lname: "Rivera",
+      specialization: "General Surgery",
+      email: "nick.rivera@rjl.se",
+    },
+  ];
+
+  // creates table of doctors at startup
+  db.run(
+    "CREATE TABLE doctor (did INTEGER PRIMARY KEY, dfname TEXT NOT NULL, dlname TEXT NOT NULL, dspec TEXT NOT NULL, demail TEXT NOT NULL)",
+    (error) => {
+      if (error) {
+        // tests error: display error
+        console.log("---> ERROR: ", error);
+      } else {
+        // tests error: no error, the table has been created
+        console.log("---> Table created!");
+
+        // insert the doctors
+        doctor.forEach((oneDoctor) => {
+          db.run(
+            "INSERT INTO doctor (did, dfname, dlname, dspec, demail) VALUES (?, ?, ?, ?, ?)",
+            [
+              oneDoctor.docid,
+              oneDoctor.fname,
+              oneDoctor.lname,
+              oneDoctor.specialization,
+              oneDoctor.email,
+            ],
+            (error) => {
+              if (error) {
+                console.log("ERROR: ", error);
+              } else {
+                console.log("A line was added into the doctor table");
               }
             }
           );
@@ -417,6 +513,20 @@ app.get(`/treatments`, (req, res) => {
   });
 });
 
+app.get(`/doctors`, (req, res) => {
+  // geting data from SQLite database
+  db.all("SELECT * FROM doctor", (error, listOfDoctors) => {
+    if (error) {
+      // display an error in the terminal
+      console.log("ERROR: ", error);
+    } else {
+      // declare doctorData as a local variable
+      const doctorData = { doctor: listOfDoctors };
+      res.render("doctors.handlebars", doctorData);
+    }
+  });
+});
+
 app.get(`/about`, (req, res) => {
   // not using the res.sendFile function
   //   res.sendFile(__dirname + `/views/medhub.html`);
@@ -438,8 +548,9 @@ app.get("/fika", (req, res) => {
 // ----- LISTEN -----
 // make the server listen to connections
 app.listen(port, function () {
-  // create the table with patients and fill it with data
+  // create the table with patients, doctors and treatments and fill it with data
   // initTablePatient(db);
+  // initTableDoctor(db);
   // initTableTreatment(db);
   console.log("The server is listening on port " + port + "...");
   // The same thing written with backsticks looks like this:

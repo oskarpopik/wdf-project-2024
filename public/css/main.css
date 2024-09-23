@@ -48,3 +48,7 @@ h2 {
   color: var(--pink);
   font-weight: 700;
 }
+
+.doctor-image {
+  width: 10%;
+}

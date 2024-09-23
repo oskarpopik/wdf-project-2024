@@ -1,0 +1,20 @@
+<p>This is the doctors site</p>
+<h2>List of doctors:</h2>
+<div class="doctor-list">
+  <ol>
+    {{#each doctor}}
+      <li>
+        <!-- Doctors images were generated using generative AI tool Adobe Firefly -->
+        <img
+          src="/img/docid-{{did}}.jpg"
+          alt="Picture of the doctor {{dfname}} {{dlname}}"
+          class="doctor-image"
+        />
+        {{dfname}}
+        {{dlname}},
+        {{dspec}},
+        {{demail}}
+      </li>
+    {{/each}}
+  </ol>
+</div>
