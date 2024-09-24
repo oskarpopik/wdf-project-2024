@@ -19,6 +19,7 @@ const app = express();
 // define the port
 const port = 8080;
 
+// ----- DATABASE -----
 const dbFile = "medhub-db.sqlite3.db";
 db = new sqlite3.Database(dbFile);
 
@@ -405,49 +406,12 @@ function initTableTreatment(db) {
   );
 }
 
-// app.get("/rawpersons", function (req, res) {
-//   db.all("SELECT * FROM Person", function (err, rawPersons) {
-//     if (err) {
-//       console.log("Error: " + err);
-//     } else {
-//       console.log("Data found, sending it back to the client...");
-//       res.send(rawPersons);
-//     }
-//   });
-// });
-
-// app.get("/listpersons", function (req, res) {
-//   db.all("SELECT * FROM Person", function (err, rawPersons) {
-//     if (err) {
-//       console.log("Error: " + err);
-//     } else {
-//       listPersonsHTML = "<ul>";
-//       rawPersons.forEach(function (onePerson) {
-//         listPersonsHTML += "<li>";
-//         // here, we need to use backticks!
-//         listPersonsHTML += `${onePerson.fname}, `;
-//         listPersonsHTML += `${onePerson.lname}, `;
-//         listPersonsHTML += `${onePerson.age} years old, `;
-//         listPersonsHTML += `${onePerson.email}`;
-//         listPersonsHTML += "</li>";
-//       });
-//       listPersonsHTML += "</ul>";
-//       // This console.log is used to test what the js code is creating in the html
-//       //   console.log(listPersonsHTML);
-//       res.send(listPersonsHTML);
-//     }
-//   });
-// });
-
-//
-//
-//
-//
-
 // ----- MIDDLEWARES -----
 // define the public directory as 'static' making it public
 app.use(express.static("public"));
 // allows express middleware for processing forms sent using the "post" method
+// true: parsing more complex, nested data structures
+// false: supports simpler, flat key-value pairs
 app.use(express.urlencoded({ extended: true }));
 
 // ----- HANDLEBARS -----
