@@ -14,4 +14,10 @@
       <input type="submit" value="Login" />
     </div>
   </form>
+  {{#if error}}
+    <div class="login-error">{{error}}</div>
+  {{/if}}
+  {{#if message}}
+    <div class="login-error">{{message}}</div>
+  {{/if}}
 </div>

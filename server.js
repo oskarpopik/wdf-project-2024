@@ -1,4 +1,25 @@
+// ----- GLOBAL DEFINITIONS
+const adminName = "admin";
+// password before hashing
+// const adminPassword = "I<3LicensePlates!";
+const adminPassword =
+  "$2b$14$HDqipYjU45DFd6ZjG0G0t.398Mqk58gqeFdLIc0dlh6y.PcvZlmlS";
+
 // ----- PACKAGES -----
+// ----- BCRYPT -----
+const bcrypt = require("bcrypt");
+// salting round for the bcrypt algorithm
+const saltRounds = 14;
+
+// run this code to generated a hashed password
+// bcrypt.hash(adminPassword, saltRounds, function (err, hash) {
+//   if (err) {
+//     console.log("---> Error while encrypting the password: ", err);
+//   } else {
+//     console.log("---> Hashed password generated: ", hash);
+//   }
+// });
+
 // load the express package in the express variable
 const express = require("express");
 // import the built-in fs (File System) module and assign it to the fs constant
@@ -140,28 +161,84 @@ app.listen(port, function () {
 
 app.post(`/login`, (req, res) => {
   // show the route
-  console.log("URL: ", req.url);
+  // console.log("URL: ", req.url);
 
   // show the received POST data
   const postData = JSON.stringify(req.body);
-  console.log("POST data: ", postData);
+  // console.log("POST data: ", postData);
 
   const username = req.body.username;
   const password = req.body.password;
 
   // show GET results from the URL
-  console.log("Received login/password: " + username + " / " + password);
+  // console.log("Received login/password: " + username + " / " + password);
 
   // verification if the username and the password were provided
   if (!username || !password) {
-    return res.status(400).send("Username and password are required to login");
+    // build a model
+    const loginErrorModel = {
+      error: "Username and password are required to login.",
+      message: "",
+    };
+    // send a response
+    return res.status(400).render("login.handlebars", loginErrorModel);
   }
 
-  //
-  //
-  //
-  // sending a response after login
-  res.send(`Received: Username - ${username}, Password - ${password}`);
+  // verification if the right username was provided
+  if (username !== adminName) {
+    console.log("Username was not admin");
+    const loginWrongUserModel = {
+      error: `Sorry, the username ${username} is not correct.`,
+      message: "",
+    };
+    return res.status(400).render("login.handlebars", loginWrongUserModel);
+  }
+
+  // checking for admin credentials
+  if (username === adminName) {
+    console.log("The username is admin.");
+
+    //   if (password === adminPassword) {
+    //     console.log("The password for admin is correct.");
+    //     const loginSuccessModel = {
+    //       error: "",
+    //       message: "Welcome home Mr Admin!",
+    //     };
+    //     res.render("login.handlebars", loginSuccessModel);
+    //   } else {
+    //     const loginWrongPassModel = { error: "Wrong password.", message: "" };
+    //     res.status(400).render("login.handlebars", loginWrongPassModel);
+    //   }
+    // } else {
+    //   const loginWrongUserModel = {
+    //     error: `Sorry, the username ${username} is not correct.`,
+    //     message: "",
+    //   };
+    //   res.status(400).render("login.handlebars", loginWrongUserModel);
+
+    // checking for admin credentials with bcrypt
+    bcrypt.compare(password, adminPassword, (err, result) => {
+      if (err) {
+        const loginCompPassModel = {
+          error: "Error while comparing passwords: " + err,
+          message: "",
+        };
+        res.status(500).render("login.handlebars", loginCompPassModel);
+      }
+
+      if (result) {
+        console.log("The password for admin is correct.");
+        const loginSuccessModel = {
+          error: "",
+          message: "Welcome home Mr Admin!",
+        };
+        res.render("login.handlebars", loginSuccessModel);
+      } else {
+        const loginWrongPassModel = { error: "Wrong password.", message: "" };
+        res.status(400).render("login.handlebars", loginWrongPassModel);
+      }
+    });
+  }
 });
 
 // ----- FUNCTIONS -----

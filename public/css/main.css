@@ -52,3 +52,8 @@ h2 {
 .doctor-image {
   width: 10%;
 }
+
+.login-error {
+  font-weight: 700;
+  color: var(--dark-red);
+}
