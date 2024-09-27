@@ -62,3 +62,13 @@ h2 {
   font-weight: 700;
   color: var(--dark-red);
 }
+
+#treatment-patient-name {
+  font-weight: 700;
+  color: var(--pink);
+}
+
+#treatment-doctor-name {
+  font-weight: 700;
+  color: var(--green);
+}

@@ -137,16 +137,26 @@ app.get(`/treatments`, (req, res) => {
   // const treatmentData = { treatment };
 
   // geting data from SQLite database
-  db.all("SELECT * FROM treatment", (error, listOfTreatments) => {
-    if (error) {
-      // display an error in the terminal
-      console.log("ERROR: ", error);
-    } else {
-      // declare treatmentData as a local variable
-      const treatmentData = { treatment: listOfTreatments };
-      res.render("treatments.handlebars", treatmentData);
+  db.all(
+    `SELECT treatment.*,
+    patient.pfname AS pat_fname,
+    patient.plname AS pat_lname,
+    doctor.dfname AS doc_fname,
+    doctor.dlname AS doc_lname
+    FROM treatment
+    INNER JOIN patient ON treatment.pid = patient.pid 
+    INNER JOIN doctor ON treatment.did = doctor.did`,
+    (error, listOfTreatments) => {
+      if (error) {
+        // display an error in the terminal
+        console.log("ERROR: ", error);
+      } else {
+        // declare treatmentData as a local variable
+        const treatmentData = { treatment: listOfTreatments };
+        res.render("treatments.handlebars", treatmentData);
+      }
     }
-  });
+  );
 });
 
 app.get(`/doctors`, (req, res) => {
@@ -551,6 +561,8 @@ function initTableTreatment(mydb) {
       enddate: "2024-01-10",
       medname: "N/A",
       meddose: "N/A",
+      pid: 1,
+      did: 4,
     },
     {
       treatid: "2",
@@ -559,6 +571,8 @@ function initTableTreatment(mydb) {
       enddate: "2024-08-15",
       medname: "Lisinopril",
       meddose: "10 mg daily",
+      pid: 2,
+      did: 1,
     },
     {
       treatid: "3",
@@ -567,6 +581,8 @@ function initTableTreatment(mydb) {
       enddate: "2024-12-01",
       medname: "Metformin",
       meddose: "500 mg twice daily",
+      pid: 3,
+      did: 5,
     },
     {
       treatid: "4",
@@ -575,6 +591,8 @@ function initTableTreatment(mydb) {
       enddate: "2024-09-01",
       medname: "Cetirizine",
       meddose: "10 mg daily",
+      pid: 4,
+      did: 4,
     },
     {
       treatid: "5",
@@ -583,6 +601,8 @@ function initTableTreatment(mydb) {
       enddate: "2025-05-15",
       medname: "Alendronate",
       meddose: "70 mg weekly",
+      pid: 5,
+      did: 8,
     },
     {
       treatid: "6",
@@ -591,6 +611,8 @@ function initTableTreatment(mydb) {
       enddate: "2024-12-10",
       medname: "Topiramate",
       meddose: "25 mg daily",
+      pid: 6,
+      did: 2,
     },
     {
       treatid: "7",
@@ -599,6 +621,8 @@ function initTableTreatment(mydb) {
       enddate: "2025-07-05",
       medname: "Atorvastatin",
       meddose: "20 mg daily",
+      pid: 7,
+      did: 6,
     },
     {
       treatid: "8",
@@ -607,6 +631,8 @@ function initTableTreatment(mydb) {
       enddate: "2024-11-20",
       medname: "Albuterol",
       meddose: "90 mcg inhaled every 4-6 hours as needed",
+      pid: 8,
+      did: 7,
     },
     {
       treatid: "9",
@@ -615,6 +641,8 @@ function initTableTreatment(mydb) {
       enddate: "2025-09-15",
       medname: "Lucentis",
       meddose: "One injection every month",
+      pid: 9,
+      did: 4,
     },
     {
       treatid: "10",
@@ -623,6 +651,8 @@ function initTableTreatment(mydb) {
       enddate: "2025-10-10",
       medname: "Ibuprofen",
       meddose: "400 mg every 8 hours as needed",
+      pid: 10,
+      did: 3,
     },
     {
       treatid: "11",
@@ -631,6 +661,8 @@ function initTableTreatment(mydb) {
       enddate: "2025-05-01",
       medname: "Sertraline",
       meddose: "50 mg daily",
+      pid: 11,
+      did: 2,
     },
     {
       treatid: "12",
@@ -639,12 +671,17 @@ function initTableTreatment(mydb) {
       enddate: "2025-12-01",
       medname: "Simvastatin",
       meddose: "40 mg daily",
+      pid: 12,
+      did: 5,
     },
   ];
 
   // creates table of treatments at startup
-  mydb.run(
-    "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstart TEXT NOT NULL, tend TEXT NOT NULL, tmed TEXT, tdose TEXT)",
+  https: mydb.run(
+    // Code for addid a foreign key adapted from a website - BEGIN
+    // Source: (magichat, 2024, "How to Create a Table With a Foreign Key in SQL?", https://www.geeksforgeeks.org/how-to-create-a-table-with-a-foreign-key-in-sql/
+    "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstart TEXT NOT NULL, tend TEXT NOT NULL, tmed TEXT, tdose TEXT, pid INTEGER, did INTEGER, FOREIGN KEY (pid) REFERENCES patient(pid), FOREIGN KEY (did) REFERENCES doctor(did))",
+    // Code for addid a foreign key adapted from a website - END
     (error) => {
       if (error) {
         // tests error: display error
@@ -656,7 +693,7 @@ function initTableTreatment(mydb) {
         // insert the treatments
         treatment.forEach((oneTreatment) => {
           mydb.run(
-            "INSERT INTO treatment (tid, tdesc, tstart, tend, tmed, tdose) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO treatment (tid, tdesc, tstart, tend, tmed, tdose, pid, did) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [
               oneTreatment.treatid,
               oneTreatment.description,
@@ -664,6 +701,8 @@ function initTableTreatment(mydb) {
               oneTreatment.enddate,
               oneTreatment.medname,
               oneTreatment.meddose,
+              oneTreatment.pid,
+              oneTreatment.did,
             ],
             (error) => {
               if (error) {

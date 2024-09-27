@@ -4,6 +4,10 @@
 <ol>
   {{#each treatment}}
     <li>
+      <span id="treatment-patient-name">{{pat_fname}}
+        {{pat_lname}}
+      </span>
+      //
       {{tstart}}
       //
       {{tend}}
@@ -11,7 +15,8 @@
       {{tdesc}}
       //
       {{tmed}}
-      ({{tdose}})
+      ({{tdose}}) // Attending physician:
+      <span id="treatment-doctor-name"> {{doc_fname}} {{doc_lname}} </span>
     </li>
   {{/each}}
 </ol>
