@@ -29,8 +29,15 @@ const fs = require("fs");
 const sqlite3 = require("sqlite3");
 // load the handlebars for express
 const { engine } = require("express-handlebars");
+// load sessions in express
+const session = require("express-session");
+// store sessions in a SQLite3 database file
+const connectSqlite3 = require("connect-sqlite3");
+const { log } = require("console");
+
+// NOT USED ANYMORE:
 // required to get data from POST forms
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 
 // ----- APPLICATION -----
 // create a web application
@@ -43,6 +50,27 @@ const port = 8080;
 // ----- DATABASE -----
 const dbFile = "medhub-db.sqlite3.db";
 const db = new sqlite3.Database(dbFile);
+
+// ----- SESSIONS ----
+// store sessions in a database
+const SQLiteStore = connectSqlite3(session);
+
+// define the session
+app.use(
+  session({
+    store: new SQLiteStore({ db: "session-db.db" }),
+    // sessions won't be saved to the store unless they are modified
+    saveUninitialized: false,
+    // Prevents saving session back to the store if the session data hasn't changed during the request
+    resave: false,
+    secret: "ThisH3r3IsAGr8S3cret&IAmN0tT3llingA1Soul",
+  })
+);
+app.use(function (req, res, next) {
+  console.log("Session passed to response locals...");
+  res.locals.session = req.session;
+  next();
+});
 
 // ----- MIDDLEWARES -----
 // define the public directory as 'static' making it public
@@ -78,7 +106,13 @@ app.get(`/`, (req, res) => {
   // to log each request of the "/" route
   //   console.log("I recieved a new request, so I am sending back the response");
   //   res.send("This is the way");
-  res.render("home.handlebars");
+  const userSessionModel = {
+    isLoggedIn: req.session.isLoggedIn,
+    name: req.session.name,
+    isAdmin: req.session.isAdmin,
+  };
+  console.log("---> Home model: " + JSON.stringify(userSessionModel));
+  res.render("home.handlebars", userSessionModel);
 });
 
 app.get(`/patients`, (req, res) => {
@@ -143,6 +177,17 @@ app.get(`/login`, (req, res) => {
   res.render("login.handlebars");
 });
 
+app.get(`/logout`, (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log("Error while destroying the session: ", err);
+    } else {
+      console.log(`Logged out.`);
+      res.redirect("/");
+    }
+  });
+});
+
 app.get("/fika", (req, res) => {
   res.sendStatus(418);
 });
@@ -164,7 +209,7 @@ app.post(`/login`, (req, res) => {
   // console.log("URL: ", req.url);
 
   // show the received POST data
-  const postData = JSON.stringify(req.body);
+  // const postData = JSON.stringify(req.body);
   // console.log("POST data: ", postData);
 
   const username = req.body.username;
@@ -223,19 +268,28 @@ app.post(`/login`, (req, res) => {
           error: "Error while comparing passwords: " + err,
           message: "",
         };
-        res.status(500).render("login.handlebars", loginCompPassModel);
+        return res.status(500).render("login.handlebars", loginCompPassModel);
       }
 
       if (result) {
         console.log("The password for admin is correct.");
-        const loginSuccessModel = {
-          error: "",
-          message: "Welcome home Mr Admin!",
-        };
-        res.render("login.handlebars", loginSuccessModel);
+        // SESSIONS
+        // saves this login information in the session-db
+        req.session.idAdmin = true;
+        req.session.isLoggedIn = true;
+        req.session.name = username;
+        console.log("Session information: " + JSON.stringify(req.session));
+        // redirect after login
+        return res.redirect("/");
+
+        // const loginSuccessModel = {
+        //   error: "",
+        //   message: "Welcome home Mr Admin!",
+        // };
+        // return res.render("login.handlebars", loginSuccessModel);
       } else {
         const loginWrongPassModel = { error: "Wrong password.", message: "" };
-        res.status(400).render("login.handlebars", loginWrongPassModel);
+        return res.status(400).render("login.handlebars", loginWrongPassModel);
       }
     });
   }
