@@ -1,0 +1,21 @@
+<h2>Patient details</h2>
+<div class="patient-details">
+  <!-- Patient images were generated using generative AI tool Adobe Firefly -->
+  <img
+    src="/img/patid-{{patient.pid}}.jpg"
+    alt="Picture of the patient {{patient.pfname}} {{patient.plname}}"
+    class="patient-image"
+  />
+  {{patient.pfname}}
+  {{patient.plname}},
+  {{patient.page}} 
+  years old, gender:
+  {{#if (isEqual patient.pgender "Male")}} 
+    <span class="patient-male">
+  {{else}}
+    <span class="patient-female">
+  {{/if}} 
+  {{patient.pgender}}</span>. Address:
+  {{patient.pcontact}}. Phone:
+  {{patient.pphone}}
+</div>

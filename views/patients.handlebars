@@ -5,24 +5,8 @@
     {{!-- {{patient}} --}}
     {{#each patient}}
       <li>
-        <!-- Patient images were generated using generative AI tool Adobe Firefly -->
-        <img
-          src="/img/patid-{{pid}}.jpg"
-          alt="Picture of the patient {{pfname}} {{plname}}"
-          class="patient-image"
-        />
-        {{pfname}}
-        {{plname}},
-        {{page}}
-        years old, gender: 
-        {{#if (isEqual pgender "Male")}}
-            <span class="patient-male">
-        {{else}}
-            <span class="patient-female">
-        {{/if}} 
-        {{pgender}}</span>. Address:
-        {{pcontact}}. Phone:
-        {{pphone}}</li>
+        <a href="/patients/{{pid}}">{{pfname}} {{plname}} </a>
+      </li>
     {{/each}}
   </ol>
 </div>

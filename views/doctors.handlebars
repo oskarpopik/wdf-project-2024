@@ -4,16 +4,7 @@
   <ol>
     {{#each doctor}}
       <li>
-        <!-- Doctors images were generated using generative AI tool Adobe Firefly -->
-        <img
-          src="/img/docid-{{did}}.jpg"
-          alt="Picture of the doctor {{dfname}} {{dlname}}"
-          class="doctor-image"
-        />
-        {{dfname}}
-        {{dlname}},
-        {{dspec}},
-        {{demail}}
+        <a href="/doctors/{{did}}">{{dfname}} {{dlname}}</a>
       </li>
     {{/each}}
   </ol>

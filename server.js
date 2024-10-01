@@ -132,6 +132,26 @@ app.get(`/patients`, (req, res) => {
   });
 });
 
+// create a new route to sen back information on one specific patient
+app.get("/patients/:patientid", (req, res) => {
+  console.log(
+    "Patient route parameter patientid: " + JSON.stringify(req.params.patientid)
+  );
+  // select in the table the patient with a given id
+  db.get(
+    "SELECT * FROM patient WHERE pid=?",
+    [req.params.patientid],
+    (error, thePatient) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        const patientIdData = { patient: thePatient };
+        res.render("patient.handlebars", patientIdData);
+      }
+    }
+  );
+});
+
 app.get(`/treatments`, (req, res) => {
   // getting data directly from a JSON object variable
   // const treatmentData = { treatment };
@@ -159,6 +179,35 @@ app.get(`/treatments`, (req, res) => {
   );
 });
 
+// create a new route to sen back information on one specific treatment
+app.get("/treatments/:treatmentid", (req, res) => {
+  console.log(
+    "Treatment route parameter treatmentid: " +
+      JSON.stringify(req.params.treatmentid)
+  );
+  // select in the table the treatment with a given id
+  db.get(
+    `SELECT treatment.*,
+    patient.pfname AS pat_fname,
+    patient.plname AS pat_lname,
+    doctor.dfname AS doc_fname,
+    doctor.dlname AS doc_lname
+    FROM treatment 
+    INNER JOIN patient ON treatment.pid = patient.pid 
+    INNER JOIN doctor ON treatment.did = doctor.did
+    WHERE tid = ?`,
+    [req.params.treatmentid],
+    (error, theTreatment) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        const treatmentIdData = { treatment: theTreatment };
+        res.render("treatment.handlebars", treatmentIdData);
+      }
+    }
+  );
+});
+
 app.get(`/doctors`, (req, res) => {
   // geting data from SQLite database
   db.all("SELECT * FROM doctor", (error, listOfDoctors) => {
@@ -171,6 +220,26 @@ app.get(`/doctors`, (req, res) => {
       res.render("doctors.handlebars", doctorData);
     }
   });
+});
+
+// create a new route to sen back information on one specific docotor
+app.get("/doctors/:doctorid", (req, res) => {
+  console.log(
+    "Doctor route parameter doctorid: " + JSON.stringify(req.params.doctorid)
+  );
+  // select in the table the doctor with a given id
+  db.get(
+    "SELECT * FROM doctor WHERE did=?",
+    [req.params.doctorid],
+    (error, theDoctor) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        const doctorIdData = { doctor: theDoctor };
+        res.render("doctor.handlebars", doctorIdData);
+      }
+    }
+  );
 });
 
 app.get(`/about`, (req, res) => {
@@ -677,7 +746,7 @@ function initTableTreatment(mydb) {
   ];
 
   // creates table of treatments at startup
-  https: mydb.run(
+  mydb.run(
     // Code for addid a foreign key adapted from a website - BEGIN
     // Source: (magichat, 2024, "How to Create a Table With a Foreign Key in SQL?", https://www.geeksforgeeks.org/how-to-create-a-table-with-a-foreign-key-in-sql/
     "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstart TEXT NOT NULL, tend TEXT NOT NULL, tmed TEXT, tdose TEXT, pid INTEGER, did INTEGER, FOREIGN KEY (pid) REFERENCES patient(pid), FOREIGN KEY (did) REFERENCES doctor(did))",

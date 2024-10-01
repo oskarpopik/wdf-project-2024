@@ -1,22 +1,18 @@
 <p>This is the treatments site</p>
 <h2>List of treatments:</h2>
-<div class="treatment-list"></div>
-<ol>
-  {{#each treatment}}
-    <li>
-      <span id="treatment-patient-name">{{pat_fname}}
-        {{pat_lname}}
-      </span>
-      //
-      {{tstart}}
-      //
-      {{tend}}
-      //
-      {{tdesc}}
-      //
-      {{tmed}}
-      ({{tdose}}) // Attending physician:
-      <span id="treatment-doctor-name"> {{doc_fname}} {{doc_lname}} </span>
-    </li>
-  {{/each}}
-</ol>
+<div class="treatment-list">
+  <ol>
+    {{#each treatment}}
+      <li><a href="/treatments/{{tid}}">
+          <span id="treatment-patient-name">{{pat_fname}}
+            {{pat_lname}}
+          </span>
+          //
+          {{tstart}}
+        </a>
+        // Attending physician:
+        <span id="treatment-doctor-name"> {{doc_fname}} {{doc_lname}} </span>
+      </li>
+    {{/each}}
+  </ol>
+</div>

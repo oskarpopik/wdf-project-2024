@@ -1,7 +1,7 @@
 # https://prettier.io/docs/en/ignore.html
 
 # Ignore specific files
-/views/patients.handlebars
+/views/patient.handlebars
 
 # # Ignore all Handlebars files
 # *.handlebars
