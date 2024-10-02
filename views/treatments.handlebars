@@ -1,17 +1,39 @@
 <p>This is the treatments site</p>
 <h2>List of treatments:</h2>
+<div class="treatment-new">
+  {{#if session.isAdmin}}
+    <a href="/treatments/new">New treatment</a>
+  {{/if}}
+</div>
 <div class="treatment-list">
   <ol>
     {{#each treatment}}
-      <li><a href="/treatments/{{tid}}">
-          <span id="treatment-patient-name">{{pat_fname}}
+      <li>
+        <a href="/treatments/{{tid}}">
+        <!-- Treatment illustration was generated using generative AI tool Adobe Firefly -->
+  <img
+    src="/img/treatment.png"
+    alt="Illustration of a treatment"
+    class="treatment-image"
+  />
+          <span id="treatment-patient-name">
+            {{pat_fname}}
             {{pat_lname}}
           </span>
           //
           {{tstart}}
         </a>
         // Attending physician:
-        <span id="treatment-doctor-name"> {{doc_fname}} {{doc_lname}} </span>
+        <span id="treatment-doctor-name">
+          {{doc_fname}}
+          {{doc_lname}}
+        </span>
+        {{#if ../session.isAdmin}}
+        |||
+        <a href="/treatments/modify/{{tid}}" class="treatment-modify">Modify</a>
+        |||
+        <a href="/treatments/delete/{{tid}}" class="treatment-delete">Delete</a>
+        {{/if}}
       </li>
     {{/each}}
   </ol>

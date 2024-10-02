@@ -35,6 +35,10 @@ h2 {
   font-weight: 700;
 }
 
+.treatment-image {
+  width: 5%;
+}
+
 .patient-image {
   width: 10%;
 }

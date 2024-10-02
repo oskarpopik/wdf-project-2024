@@ -132,7 +132,7 @@ app.get(`/patients`, (req, res) => {
   });
 });
 
-// create a new route to sen back information on one specific patient
+// create a new route to sent back information on one specific patient
 app.get("/patients/:patientid", (req, res) => {
   console.log(
     "Patient route parameter patientid: " + JSON.stringify(req.params.patientid)
@@ -179,7 +179,7 @@ app.get(`/treatments`, (req, res) => {
   );
 });
 
-// create a new route to sen back information on one specific treatment
+// create a new route to sent back information on one specific treatment
 app.get("/treatments/:treatmentid", (req, res) => {
   console.log(
     "Treatment route parameter treatmentid: " +
@@ -208,6 +208,30 @@ app.get("/treatments/:treatmentid", (req, res) => {
   );
 });
 
+// delete one specific treatment
+app.get("/treatments/delete/:treatmentid", (req, res) => {
+  console.log(
+    "Treatment route parameter treatmentid: " +
+      JSON.stringify(req.params.treatmentid)
+  );
+  // delete a treatment with a given id in the treatment table
+  db.run(
+    "DELETE FROM treatment WHERE tid=?",
+    [req.params.treatmentid],
+    (error, theTreatment) => {
+      if (error) {
+        console.log("ERROR: " + error);
+      } else {
+        console.log(
+          "The treatment " + req.params.treatmentid + " has been deleted!"
+        );
+        // redirect to the treatments list route
+        res.redirect("/treatments");
+      }
+    }
+  );
+});
+
 app.get(`/doctors`, (req, res) => {
   // geting data from SQLite database
   db.all("SELECT * FROM doctor", (error, listOfDoctors) => {
@@ -222,7 +246,7 @@ app.get(`/doctors`, (req, res) => {
   });
 });
 
-// create a new route to sen back information on one specific docotor
+// create a new route to sent back information on one specific docotor
 app.get("/doctors/:doctorid", (req, res) => {
   console.log(
     "Doctor route parameter doctorid: " + JSON.stringify(req.params.doctorid)
@@ -354,7 +378,7 @@ app.post(`/login`, (req, res) => {
         console.log("The password for admin is correct.");
         // SESSIONS
         // saves this login information in the session-db
-        req.session.idAdmin = true;
+        req.session.isAdmin = true;
         req.session.isLoggedIn = true;
         req.session.name = username;
         console.log("Session information: " + JSON.stringify(req.session));
