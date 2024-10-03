@@ -179,6 +179,28 @@ app.get(`/treatments`, (req, res) => {
   );
 });
 
+// create a new treatment
+// The following 20 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03
+app.get("/treatments/new", (req, res) => {
+  // Fetch patients and doctors from the database
+  const sqlPatientTable = "SELECT pid, pfname, plname FROM patient";
+  const sqlDoctorTable = "SELECT did, dfname, dlname FROM doctor";
+
+  db.all(sqlPatientTable, (error, patients) => {
+    if (error) {
+      return res.status(500).send("Error fetching patients.");
+    }
+
+    db.all(sqlDoctorTable, (error, doctors) => {
+      if (error) {
+        return res.status(500).send("Error fetching doctors.");
+      }
+      // Pass patients and doctors data to the form view
+      res.render("treatment-new.handlebars", { patients, doctors });
+    });
+  });
+});
+
 // create a new route to sent back information on one specific treatment
 app.get("/treatments/:treatmentid", (req, res) => {
   console.log(
@@ -397,6 +419,45 @@ app.post(`/login`, (req, res) => {
     });
   }
 });
+
+// create a new treatment from the data sent in the form
+
+app.post("/treatments/new", (req, res) => {
+  const treatmentPatient = req.body.treatpat;
+  const treatmentStart = req.body.treatstart;
+  const treatmentEnd = req.body.treatend;
+  const treatmentDesc = req.body.treatdesc;
+  const treatmentMed = req.body.treatmedname;
+  const treatmentDose = req.body.treatmeddose;
+  const treatmentDoctor = req.body.treatdoc;
+
+  db.run(
+    `INSERT INTO treatment (pid, tstart, tend, tdesc, tmed, tdose, did) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      treatmentPatient,
+      treatmentStart,
+      treatmentEnd,
+      treatmentDesc,
+      treatmentMed,
+      treatmentDose,
+      treatmentDoctor,
+    ],
+    (error) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        console.log("Line added into the treatments table");
+        res.redirect("/treatments");
+      }
+    }
+  );
+});
+
+// --------------------
+
+// --------------------
+
+// --------------------
 
 // ----- FUNCTIONS -----
 function initTablePatient(mydb) {
@@ -773,7 +834,7 @@ function initTableTreatment(mydb) {
   mydb.run(
     // Code for addid a foreign key adapted from a website - BEGIN
     // Source: (magichat, 2024, "How to Create a Table With a Foreign Key in SQL?", https://www.geeksforgeeks.org/how-to-create-a-table-with-a-foreign-key-in-sql/
-    "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstart TEXT NOT NULL, tend TEXT NOT NULL, tmed TEXT, tdose TEXT, pid INTEGER, did INTEGER, FOREIGN KEY (pid) REFERENCES patient(pid), FOREIGN KEY (did) REFERENCES doctor(did))",
+    "CREATE TABLE treatment (tid INTEGER PRIMARY KEY, tdesc TEXT NOT NULL, tstart TEXT NOT NULL, tend TEXT, tmed TEXT, tdose TEXT, pid INTEGER, did INTEGER, FOREIGN KEY (pid) REFERENCES patient(pid), FOREIGN KEY (did) REFERENCES doctor(did))",
     // Code for addid a foreign key adapted from a website - END
     (error) => {
       if (error) {
