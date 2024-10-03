@@ -1,55 +1,73 @@
-<h2>New treatment</h2>
-<div class="treatment-form">
+{{#if treatment.tid}}
+  <h2>Modify treatment</h2>
+{{else}}
+  <h2>New treatment</h2>
+{{/if}}
 
-  <form action="/treatments/new" method="POST">
+  <div class="treatment-form">
+    
+    {{#if treatment.tid}}
+      <form action="/treatments/modify/{{treatment.tid}}" method="POST">
+    {{else}}
+      <form action="/treatments/new" method="POST">
+    {{/if}}
+    
+        {{!-- The following 11 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03 --}}
+        <div>
+          <label for="treatpat">Patient:</label>
+          <select id="treatpat" name="treatpat" required>
+            {{#each patients}}
+              <option value="{{pid}}" 
+                {{#if (isEqual pid ../treatment.pid)}} selected="selected"{{/if}}>
+                {{pfname}} {{plname}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
 
-    {{! The following 8 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03 }}
-    <div>
-      <label for="treatpat">Patient:</label>
-      <select id="treatpat" name="treatpat" required>
-        {{#each patients}}
-          <option value="{{pid}}">{{pfname}} {{plname}}</option>
-        {{/each}}
-      </select>
-    </div>
+        <div>
+          <label for="treatstart">Start date:</label>
+          <input type="date" id="treatstart" name="treatstart" required 
+                value="{{treatment.tstart}}" />
+        </div>
 
-    <div>
-      <label for="treatstart">Start date:</label>
-      <input type="date" id="treatstart" name="treatstart" required />
-    </div>
+        <div>
+          <label for="treatend">End date:</label>
+          <input type="date" id="treatend" name="treatend" value="{{treatment.tend}}" />
+        </div>
 
-    <div>
-      <label for="treatend">End date:</label>
-      <input type="date" id="treatend" name="treatend" />
-    </div>
+        <div>
+          <label for="treatdesc">Description:</label>
+          <textarea id="treatdesc" name="treatdesc" required>{{treatment.tdesc}}</textarea>
+        </div>
 
-    <div>
-      <label for="treatdesc">Description:</label>
-      <textarea id="treatdesc" name="treatdesc" required></textarea>
-    </div>
+        <div>
+          <label for="treatmedname">Medicine name:</label>
+          <input type="text" id="treatmedname" name="treatmedname" value="{{treatment.tmed}}" />
+        </div>
 
-    <div>
-      <label for="treatmedname">Medicine name:</label>
-      <input type="text" id="treatmedname" name="treatmedname" />
-    </div>
+        <div>
+          <label for="treatmeddose">Dose:</label>
+          <input type="text" id="treatmeddose" name="treatmeddose" value="{{treatment.tdose}}" />
+        </div>
 
-    <div>
-      <label for="treatmeddose">Dose:</label>
-      <input type="text" id="treatmeddose" name="treatmeddose" />
-    </div>
+        {{!-- The following 11 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03 --}}
+        <div>
+          <label for="treatdoc">Select Doctor:</label>
+          <select id="treatdoc" name="treatdoc" required>
+            {{#each doctors}}
+              <option value="{{did}}" 
+                {{#if (isEqual did ../treatment.did)}} selected="selected"{{/if}}>
+                {{dfname}} {{dlname}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
 
-    {{! The following 8 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03 }}
-    <div>
-      <label for="treatdoc">Select Doctor:</label>
-      <select id="treatdoc" name="treatdoc" required>
-        {{#each doctors}}
-          <option value="{{did}}">{{dfname}} {{dlname}}</option>
-        {{/each}}
-      </select>
-    </div>
-
-    <div>
-      <button type="submit">Add Treatment</button>
-    </div>
-  </form>
-</div>
+        <div>
+          <button type="submit">
+            {{#if treatment.tid}}Update Treatment{{else}}Add Treatment{{/if}}
+          </button>
+        </div>
+      </form>
+  </div>

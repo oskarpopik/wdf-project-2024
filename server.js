@@ -180,9 +180,9 @@ app.get(`/treatments`, (req, res) => {
 });
 
 // create a new treatment
-// The following 20 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03
+// The following 19 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03
 app.get("/treatments/new", (req, res) => {
-  // Fetch patients and doctors from the database
+  // fetch patients and doctors from the database
   const sqlPatientTable = "SELECT pid, pfname, plname FROM patient";
   const sqlDoctorTable = "SELECT did, dfname, dlname FROM doctor";
 
@@ -195,10 +195,50 @@ app.get("/treatments/new", (req, res) => {
       if (error) {
         return res.status(500).send("Error fetching doctors.");
       }
-      // Pass patients and doctors data to the form view
+      // use patients and doctors data in the form view
       res.render("treatment-new.handlebars", { patients, doctors });
     });
   });
+});
+
+// pre-fill the form to modify a treatment according to its id
+// The following 37 lines of code were adapted from ChatGTP https://chatgpt.com/share/66fe5921-be8c-800b-8278-dc2138f42d73 Accessed: 2024-10-03
+app.get("/treatments/modify/:treatmentid", (req, res) => {
+  const treatid = req.params.treatmentid;
+  // fetch patients and doctors from the database
+  const sqlPatientTable = "SELECT pid, pfname, plname FROM patient";
+  const sqlDoctorTable = "SELECT did, dfname, dlname FROM doctor";
+
+  db.get(
+    "SELECT * FROM treatment WHERE tid=?",
+    [treatid],
+    (error, theTreatment) => {
+      if (error) {
+        console.log("ERROR: ", error);
+        return res.redirect("/treatments");
+      }
+
+      // fetch patient and doctor to populate the select inputs
+      db.all(sqlPatientTable, (error, patients) => {
+        if (error) {
+          return res.status(500).send("Error fetching patients.");
+        }
+
+        db.all(sqlDoctorTable, (error, doctors) => {
+          if (error) {
+            return res.status(500).send("Error fetching doctors.");
+          }
+
+          // use treatment, patient, and doctor data to the form view
+          res.render("treatment-new.handlebars", {
+            treatment: theTreatment,
+            patients,
+            doctors,
+          });
+        });
+      });
+    }
+  );
 });
 
 // create a new route to sent back information on one specific treatment
@@ -421,7 +461,6 @@ app.post(`/login`, (req, res) => {
 });
 
 // create a new treatment from the data sent in the form
-
 app.post("/treatments/new", (req, res) => {
   const treatmentPatient = req.body.treatpat;
   const treatmentStart = req.body.treatstart;
@@ -441,6 +480,42 @@ app.post("/treatments/new", (req, res) => {
       treatmentMed,
       treatmentDose,
       treatmentDoctor,
+    ],
+    (error) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        console.log("Line added into the treatments table");
+        res.redirect("/treatments");
+      }
+    }
+  );
+});
+
+// update an existing treatment from the data sent in the form
+app.post("/treatments/modify/:treatmentid", (req, res) => {
+  // to get the treatment id
+  const treatid = req.params.treatmentid;
+  // to get all of information comming from the form
+  const treatmentPatient = req.body.treatpat;
+  const treatmentStart = req.body.treatstart;
+  const treatmentEnd = req.body.treatend;
+  const treatmentDesc = req.body.treatdesc;
+  const treatmentMed = req.body.treatmedname;
+  const treatmentDose = req.body.treatmeddose;
+  const treatmentDoctor = req.body.treatdoc;
+
+  db.run(
+    `UPDATE treatment SET pid=?, tstart=?, tend=?, tdesc=?, tmed=?, tdose=?, did=? WHERE tid=?`,
+    [
+      treatmentPatient,
+      treatmentStart,
+      treatmentEnd,
+      treatmentDesc,
+      treatmentMed,
+      treatmentDose,
+      treatmentDoctor,
+      treatid,
     ],
     (error) => {
       if (error) {
