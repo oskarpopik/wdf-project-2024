@@ -353,8 +353,20 @@ app.get(`/logout`, (req, res) => {
   });
 });
 
+// ----- 418 ERROR
 app.get("/fika", (req, res) => {
-  res.sendStatus(418);
+  res.status(418).render("418.handlebars");
+});
+
+// ----- 404 NOT FOUND
+// the default 404 error
+app.use((req, res) => {
+  res.status(404).render("404.handlebars");
+});
+
+// ----- 500 ERROR
+app.use((req, res) => {
+  res.status(500).render("500.handlebars");
 });
 
 // ----- LISTEN -----
