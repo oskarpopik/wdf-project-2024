@@ -6,7 +6,7 @@
   {{/if}}
 </div>
 <div class="treatment-list">
-  <ol>
+  <ul>
     {{#each treatment}}
       <li>
         <a href="/treatments/{{tid}}">
@@ -36,5 +36,21 @@
         {{/if}}
       </li>
     {{/each}}
-  </ol>
+  </ul>
+</div>
+
+{{!-- The following 14 lines of code were adapted from ChatGTP https://chatgpt.com/share/66ffceef-952c-800b-ad3a-da3c820b91b8 Accessed: 2024-10-04 --}}
+<div class="pagination">
+    {{!-- Previous button --}}
+    {{#if (gt currentPage 1)}}
+        <a href="?page={{subtract currentPage 1}}">Previous</a>
+    {{/if}}
+
+    {{!-- Show page numbers --}}
+    <span>Page {{currentPage}} of {{totalPages}}</span>
+
+    {{!-- Next button --}}
+    {{#if (lt currentPage totalPages)}}
+        <a href="?page={{add currentPage 1}}">Next</a>
+    {{/if}}
 </div>

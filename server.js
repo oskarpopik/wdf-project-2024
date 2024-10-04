@@ -82,15 +82,29 @@ app.use(express.urlencoded({ extended: true }));
 
 // ----- HANDLEBARS -----
 //initialize the engine to be handlebars
-// The use of helpers: isEqual was adapted from stackoverflow
-// Source: (Pablo Varando, 2018, "Handlebarsjs check if a string is equal to a value", https://stackoverflow.com/a/51976315)
 
 app.engine(
   "handlebars",
   engine({
     helpers: {
+      // The use of helpers: isEqual was adapted from stackoverflow
+      // Source: (Pablo Varando, 2018, "Handlebarsjs check if a string is equal to a value", https://stackoverflow.com/a/51976315)
       isEqual: function (a, b) {
         return a === b;
+      },
+      // The use of add and subtract helpers to help with pagination was suggested by ChatGPT
+      // The following 12 lines of code were adapted from ChatGTP https://chatgpt.com/share/66ffceef-952c-800b-ad3a-da3c820b91b8 Accessed: 2024-10-04
+      add: function (a, b) {
+        return a + b;
+      },
+      subtract: function (a, b) {
+        return a - b;
+      },
+      gt: function (a, b) {
+        return a > b;
+      },
+      lt: function (a, b) {
+        return a < b;
       },
     },
   })
@@ -156,27 +170,63 @@ app.get(`/treatments`, (req, res) => {
   // getting data directly from a JSON object variable
   // const treatmentData = { treatment };
 
-  // geting data from SQLite database
-  db.all(
-    `SELECT treatment.*,
+  // ADDING PAGINATION TO THE TREATMENTS
+
+  // getting current page number and ensuring the page is an integer and set default page to 1
+  const currentPage = parseInt(req.query.page) || 1;
+  // limit the ammount of treatments displayed
+  const limit = 3;
+  // calculate the starting index for each page
+  const offset = (currentPage - 1) * limit;
+
+  // The following 19 lines of code were adapted from ChatGTP https://chatgpt.com/share/66ffceef-952c-800b-ad3a-da3c820b91b8 Accessed: 2024-10-04
+  // calculate the total number of treatments
+  const sqlNumOfTreatments = `SELECT count(*) AS total from treatment`;
+
+  db.get(sqlNumOfTreatments, [], (error, countTreatments) => {
+    if (error) {
+      console.log("ERROR: ", error);
+      return res
+        .status(500)
+        .send("Error while counting the number of treatments");
+    }
+
+    // total number of treatments in the db
+    const totalTreatments = countTreatments.total;
+    // console.log("The total number of treatments: " + totalTreatments);
+
+    // total number of pages rendered rounded to the nearest integer
+    const totalPages = Math.ceil(totalTreatments / limit);
+    // console.log("The total number of pages: " + totalPages);
+
+    const sqlTreatmentTable = `SELECT treatment.*,
     patient.pfname AS pat_fname,
     patient.plname AS pat_lname,
     doctor.dfname AS doc_fname,
     doctor.dlname AS doc_lname
     FROM treatment
     INNER JOIN patient ON treatment.pid = patient.pid 
-    INNER JOIN doctor ON treatment.did = doctor.did`,
-    (error, listOfTreatments) => {
+    INNER JOIN doctor ON treatment.did = doctor.did
+    LIMIT ? OFFSET ?`;
+
+    // geting data from SQLite database
+    db.all(sqlTreatmentTable, [limit, offset], (error, listOfTreatments) => {
       if (error) {
         // display an error in the terminal
         console.log("ERROR: ", error);
+        return res.status(500).send("Error showing treatments with pagination");
       } else {
         // declare treatmentData as a local variable
-        const treatmentData = { treatment: listOfTreatments };
+        const treatmentData = {
+          treatment: listOfTreatments,
+          currentPage: currentPage,
+          totalTreatments: totalTreatments,
+          totalPages: totalPages,
+        };
         res.render("treatments.handlebars", treatmentData);
       }
-    }
-  );
+    });
+  });
 });
 
 // create a new treatment
@@ -360,14 +410,15 @@ app.get("/fika", (req, res) => {
 
 // ----- 404 NOT FOUND
 // the default 404 error
-app.use((req, res) => {
-  res.status(404).render("404.handlebars");
-});
+// app.use((req, res) => {
+//   res.status(404).render("404.handlebars");
+// });
 
 // ----- 500 ERROR
-app.use((req, res) => {
-  res.status(500).render("500.handlebars");
-});
+// app.use((err, req, res, next) => {
+// console.error(err.stack);
+//   res.status(500).render("500.handlebars");
+// });
 
 // ----- LISTEN -----
 // make the server listen to connections
