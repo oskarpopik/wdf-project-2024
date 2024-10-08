@@ -1,0 +1,44 @@
+{{#if doctor.did}}
+  <h2>Modify doctor</h2>
+{{else}}
+  <h2>New doctor</h2>
+{{/if}}
+
+  <div class="doctor-form">
+    
+    {{#if doctor.did}}
+      <form action="/doctors/modify/{{doctor.did}}" method="POST">
+    {{else}}
+      <form action="/doctors/new" method="POST">
+    {{/if}}
+
+        <div>
+          <label for="docfname">First name:</label>
+          <input type="text" id="docfname" name="docfname" required 
+                value="{{doctor.dfname}}" />
+        </div>
+
+        <div>
+          <label for="doclname">Last name:</label>
+          <input type="text" id="doclname" name="doclname" required value="{{doctor.dlname}}" />
+        </div>
+
+        <div>
+          <label for="docspec">Specialization:</label>
+          <input type="text" id="docspec" name="docspec" required value="{{doctor.dspec}}" />
+        </div>
+
+         <div>
+          <label for="docemail">Email:</label>
+          <input type="text" id="docemail" name="docemail" required value="{{doctor.demail}}" />
+        </div>
+
+        <div>
+          <button type="submit">
+            {{#if doctor.did}}Update doctor{{else}}Add doctor{{/if}}
+          </button>
+        </div>
+      </form>
+
+      <a href="/doctors">Back to Doctors</a>
+  </div>

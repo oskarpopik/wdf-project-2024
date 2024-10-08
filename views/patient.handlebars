@@ -1,11 +1,12 @@
 <h2>Patient details</h2>
 <div class="patient-details">
   <!-- Patient images were generated using generative AI tool Adobe Firefly -->
+  <!-- Images for initial patient list were generated, manually added patients use a placeholder image -->
   <img
-    src="/img/patid-{{patient.pid}}.jpg"
-    alt="Picture of the patient {{patient.pfname}} {{patient.plname}}"
-    class="patient-image"
-  />
+  src="{{#if (gt patient.pid 12)}}/img/patid-0.jpg{{else}}/img/patid-{{patient.pid}}.jpg{{/if}}"
+  alt="Picture of the patient {{patient.pfname}} {{patient.plname}}"
+  class="patient-image"
+/>
   {{patient.pfname}}
   {{patient.plname}},
   {{patient.page}} 

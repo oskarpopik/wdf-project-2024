@@ -2,9 +2,12 @@
 
 # Ignore specific files
 /views/treatments.handlebars
-/views/patient.handlebars
 /views/treatment-new.handlebars
+/views/patient.handlebars
 /views/patients.handlebars
+/views/patient-new.handlebars
+/views/doctor-new.handlebars
+/views/doctor.handlebars
 
 # # Ignore all Handlebars files
 # *.handlebars

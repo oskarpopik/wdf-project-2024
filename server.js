@@ -148,6 +148,28 @@ app.get(`/patients`, (req, res) => {
   });
 });
 
+// create a new patient
+app.get("/patients/new", (req, res) => {
+  res.render("patient-new.handlebars");
+});
+
+// pre-fill the form to modify a patient information according to its id
+app.get("/patients/modify/:patientid", (req, res) => {
+  const patientId = req.params.patientid;
+  db.get(
+    "SELECT * FROM patient WHERE pid=?",
+    [patientId],
+    (error, thePatient) => {
+      if (error) {
+        console.log("ERROR: ", error);
+        res.redirect("/patients");
+      } else {
+        res.render("patient-new.handlebars", { patient: thePatient });
+      }
+    }
+  );
+});
+
 // create a new route to sent back information on one specific patient
 app.get("/patients/:patientid", (req, res) => {
   console.log(
@@ -419,6 +441,24 @@ app.get(`/doctors`, (req, res) => {
   });
 });
 
+// create a new doctor
+app.get("/doctors/new", (req, res) => {
+  res.render("doctor-new.handlebars");
+});
+
+// pre-fill the form to modify a doctor information according to its id
+app.get("/doctors/modify/:doctorid", (req, res) => {
+  const doctorId = req.params.doctorid;
+  db.get("SELECT * FROM doctor WHERE did=?", [doctorId], (error, theDoctor) => {
+    if (error) {
+      console.log("ERROR: ", error);
+      res.redirect("/doctors");
+    } else {
+      res.render("doctor-new.handlebars", { doctor: theDoctor });
+    }
+  });
+});
+
 // create a new route to sent back information on one specific docotor
 app.get("/doctors/:doctorid", (req, res) => {
   console.log(
@@ -458,7 +498,7 @@ app.get("/doctors/delete/:doctorid", (req, res) => {
       if (row.count > 0) {
         // if such a treatments exist, restrict deletion
         // res.status(400).send("Cannot delete doctor because treatments exist.");
-        res.redirect("/deldocerror");
+        res.redirect("/del-doc-error");
         return;
       } else {
         // if there is not an associated treatment, proceed to delete the doctor
@@ -503,8 +543,8 @@ app.get(`/logout`, (req, res) => {
   });
 });
 
-app.get(`/deldocerror`, (req, res) => {
-  res.render("deldocerror.handlebars");
+app.get(`/del-doc-error`, (req, res) => {
+  res.render("del-doc-error.handlebars");
 });
 
 // ----- 418 ERROR
@@ -627,6 +667,69 @@ app.post(`/login`, (req, res) => {
   }
 });
 
+// create a new patient from the data sent in the form
+app.post("/patients/new", (req, res) => {
+  const patientFirstName = req.body.patfname;
+  const patientLastName = req.body.patlname;
+  const patientAge = req.body.patage;
+  const patientGender = req.body.patgender;
+  const patientContact = req.body.patcontact;
+  const patientPhone = req.body.patphone;
+
+  db.run(
+    `INSERT INTO patient (pfname, plname, page, pgender, pcontact, pphone) VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      patientFirstName,
+      patientLastName,
+      patientAge,
+      patientGender,
+      patientContact,
+      patientPhone,
+    ],
+    (error) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        console.log("Line added into the patients table");
+        res.redirect("/patients");
+      }
+    }
+  );
+});
+
+// modify an existing patient from the data sent in the form
+app.post("/patients/modify/:patientid", (req, res) => {
+  // to get the patient id
+  const patientId = req.params.patientid;
+  // to get all of information comming from the form
+  const patientFirstName = req.body.patfname;
+  const patientLastName = req.body.patlname;
+  const patientAge = req.body.patage;
+  const patientGender = req.body.patgender;
+  const patientContact = req.body.patcontact;
+  const patientPhone = req.body.patphone;
+
+  db.run(
+    `UPDATE patient SET pfname=?, plname=?, page=?, pgender=?, pcontact=?, pphone=? WHERE pid=?`,
+    [
+      patientFirstName,
+      patientLastName,
+      patientAge,
+      patientGender,
+      patientContact,
+      patientPhone,
+      patientId,
+    ],
+    (error) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        res.redirect("/patients");
+      }
+    }
+  );
+});
+
 // create a new treatment from the data sent in the form
 app.post("/treatments/new", (req, res) => {
   const treatmentPatient = req.body.treatpat;
@@ -659,7 +762,7 @@ app.post("/treatments/new", (req, res) => {
   );
 });
 
-// update an existing treatment from the data sent in the form
+// modify an existing treatment from the data sent in the form
 app.post("/treatments/modify/:treatmentid", (req, res) => {
   // to get the treatment id
   const treatid = req.params.treatmentid;
@@ -695,6 +798,50 @@ app.post("/treatments/modify/:treatmentid", (req, res) => {
   );
 });
 
+// create a new doctor from the data sent in the form
+app.post("/doctors/new", (req, res) => {
+  const doctorFirstName = req.body.docfname;
+  const doctorLastName = req.body.doclname;
+  const doctorSpec = req.body.docspec;
+  const doctorEmail = req.body.docemail;
+
+  db.run(
+    `INSERT INTO doctor (dfname, dlname, dspec, demail) VALUES (?, ?, ?, ?)`,
+    [doctorFirstName, doctorLastName, doctorSpec, doctorEmail],
+    (error) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        console.log("Line added into the doctors table");
+        res.redirect("/doctors");
+      }
+    }
+  );
+});
+
+// modify an existing doctor from the data sent in the form
+app.post("/doctors/modify/:doctorid", (req, res) => {
+  // to get the doctor id
+  const doctorId = req.params.doctorid;
+  // to get all of information comming from the form
+  const doctorFirstName = req.body.docfname;
+  const doctorLastName = req.body.doclname;
+  const doctorSpec = req.body.docspec;
+  const doctorEmail = req.body.docemail;
+
+  db.run(
+    `UPDATE doctor SET dfname=?, dlname=?, dspec=?, demail=? WHERE did=?`,
+    [doctorFirstName, doctorLastName, doctorSpec, doctorEmail, doctorId],
+    (error) => {
+      if (error) {
+        console.log("ERROR: ", error);
+      } else {
+        res.redirect("/doctors");
+      }
+    }
+  );
+});
+
 // --------------------
 
 // --------------------
@@ -714,7 +861,7 @@ function initTablePatient(mydb) {
       contact: "Storgatan 12, 55321 Jönköping",
     },
     {
-      patid: "2",
+      patid: "    2",
       fname: "Anna",
       lname: "Karlsson",
       age: 72,
@@ -835,8 +982,8 @@ function initTablePatient(mydb) {
               onePatient.lname,
               onePatient.age,
               onePatient.gender,
-              onePatient.phone,
               onePatient.contact,
+              onePatient.phone,
             ],
             (error) => {
               if (error) {
