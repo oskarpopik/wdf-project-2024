@@ -1,8 +1,8 @@
 <p>This is the treatments site</p>
 <h2>List of treatments:</h2>
 <div class="treatment-new">
-  {{#if session.isAdmin}}
-    <a href="/treatments/new">New treatment</a>
+  {{#if session.isLoggedIn}}
+    <a href="/treatments/new" class="new-entry">New treatment</a>
   {{/if}}
 </div>
 <div class="treatment-list">
@@ -28,11 +28,11 @@
           {{doc_fname}}
           {{doc_lname}}
         </span>
-        {{#if ../session.isAdmin}}
-        |||
-        <a href="/treatments/modify/{{tid}}" class="treatment-modify">Modify</a>
-        |||
-        <a href="/treatments/delete/{{tid}}" class="treatment-delete">Delete</a>
+        {{#if ../session.isLoggedIn}}
+        --- 
+        <a href="/treatments/modify/{{tid}}" class="modify-entry">Modify</a>
+        --- 
+        <a href="/treatments/delete/{{tid}}" class="delete-entry">Delete</a>
         {{/if}}
       </li>
     {{/each}}

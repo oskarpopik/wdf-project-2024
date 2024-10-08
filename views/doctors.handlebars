@@ -1,10 +1,21 @@
 <p>This is the doctors site</p>
 <h2>List of doctors:</h2>
+<div class="doctor-new"></div>
+  {{#if session.isAdmin}}
+    <a href="/doctors/new" class="new-entry">New doctor</a>
+  {{/if}}
+</div>
 <div class="doctor-list">
   <ol>
     {{#each doctor}}
       <li>
         <a href="/doctors/{{did}}">{{dfname}} {{dlname}}</a>
+        {{#if ../session.isAdmin}}
+        --- 
+        <a href="/doctors/modify/{{did}}" class="modify-entry">Modify</a>
+        --- 
+        <a href="/doctors/delete/{{did}}" class="delete-entry">Delete</a>
+        {{/if}}
       </li>
     {{/each}}
   </ol>

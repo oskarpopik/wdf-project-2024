@@ -35,6 +35,16 @@ h2 {
   font-weight: 700;
 }
 
+a {
+  text-decoration: none;
+  font-weight: 700;
+}
+
+a:hover {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
 .treatment-image {
   width: 5%;
 }
@@ -68,11 +78,35 @@ h2 {
 }
 
 #treatment-patient-name {
-  font-weight: 700;
+  /* font-weight: 700; */
   color: var(--pink);
 }
 
 #treatment-doctor-name {
-  font-weight: 700;
+  /* font-weight: 700; */
+  color: var(--dark-blue);
+}
+
+.new-entry {
+  color: var(--dark-blue);
+}
+
+.new-entry:hover {
+  color: var(--navy-blue);
+}
+
+.modify-entry {
   color: var(--green);
+}
+
+.modify-entry:hover {
+  color: var(--navy-blue);
+}
+
+.delete-entry {
+  color: var(--dark-red);
+}
+
+.delete-entry:hover {
+  color: var(--navy-blue);
 }

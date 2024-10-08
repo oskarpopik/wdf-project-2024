@@ -4,6 +4,7 @@
 /views/treatments.handlebars
 /views/patient.handlebars
 /views/treatment-new.handlebars
+/views/patients.handlebars
 
 # # Ignore all Handlebars files
 # *.handlebars

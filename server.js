@@ -129,6 +129,8 @@ app.get(`/`, (req, res) => {
   res.render("home.handlebars", userSessionModel);
 });
 
+// ***** PATIENTS *****
+
 app.get(`/patients`, (req, res) => {
   // getting data directly from a JSON object variable
   // const patientData = { patient };
@@ -165,6 +167,63 @@ app.get("/patients/:patientid", (req, res) => {
     }
   );
 });
+
+// delete one specific patient
+// app.get("/patients/delete/:patientid", (req, res) => {
+//   console.log(
+//     "Patient route parameter patientid: " + JSON.stringify(req.params.patientid)
+//   );
+//   // delete a patient with a given id in the patient table
+//   db.run(
+//     "DELETE FROM patient WHERE pid=?",
+//     [req.params.patientid],
+//     (error, thePatient) => {
+//       if (error) {
+//         console.log("ERROR: " + error);
+//       } else {
+//         console.log(
+//           "The patient " + req.params.patientid + " has been deleted!"
+//         );
+//         // redirect to the patients list route
+//         res.redirect("/patients");
+//       }
+//     }
+//   );
+// });
+
+// deleting a patient should result in deleting their treatment data
+// The following 29 lines of code were adapted from ChatGTP https://chatgpt.com/share/67050e6f-c4d8-800b-aa61-48fc9cc7fa80 Accessed: 2024-10-08
+app.get("/patients/delete/:patientid", (req, res) => {
+  const patientId = req.params.patientid;
+
+  // first, delete related treatments
+  db.run("DELETE FROM treatment WHERE pid=?", [patientId], (error) => {
+    if (error) {
+      console.log(
+        "ERROR: Could not delete treatments for patient " + patientId
+      );
+      res.status(500).send("Error deleting treatments.");
+      return;
+    }
+
+    // then, delete the patient
+    db.run("DELETE FROM patient WHERE pid=?", [patientId], (error) => {
+      if (error) {
+        console.log("ERROR: " + error);
+        res.status(500).send("Error deleting patient.");
+      } else {
+        console.log(
+          "The patient " +
+            patientId +
+            " and their treatments have been deleted!"
+        );
+        res.redirect("/patients");
+      }
+    });
+  });
+});
+
+// ***** TREATMENTS *****
 
 app.get(`/treatments`, (req, res) => {
   // getting data directly from a JSON object variable
@@ -344,6 +403,8 @@ app.get("/treatments/delete/:treatmentid", (req, res) => {
   );
 });
 
+// ***** DOCTORS *****
+
 app.get(`/doctors`, (req, res) => {
   // geting data from SQLite database
   db.all("SELECT * FROM doctor", (error, listOfDoctors) => {
@@ -378,6 +439,45 @@ app.get("/doctors/:doctorid", (req, res) => {
   );
 });
 
+// delete a doctor should be possible only if the doctor is not associated with an existing treatment
+// The following 34 lines of code were adapted from ChatGTP https://chatgpt.com/share/67050e6f-c4d8-800b-aa61-48fc9cc7fa80 Accessed: 2024-10-08
+app.get("/doctors/delete/:doctorid", (req, res) => {
+  const doctorId = req.params.doctorid;
+
+  // first, check if there are treatments associated with this doctor
+  db.get(
+    "SELECT COUNT(*) AS count FROM treatment WHERE did=?",
+    [doctorId],
+    (error, row) => {
+      if (error) {
+        console.log("ERROR: " + error);
+        res.status(500).send("Error checking for related treatments.");
+        return;
+      }
+
+      if (row.count > 0) {
+        // if such a treatments exist, restrict deletion
+        // res.status(400).send("Cannot delete doctor because treatments exist.");
+        res.redirect("/deldocerror");
+        return;
+      } else {
+        // if there is not an associated treatment, proceed to delete the doctor
+        db.run("DELETE FROM doctor WHERE did=?", [doctorId], (error) => {
+          if (error) {
+            console.log("ERROR: " + error);
+            res.status(500).send("Error deleting doctor.");
+          } else {
+            console.log("The doctor " + doctorId + " has been deleted!");
+            res.redirect("/doctors");
+          }
+        });
+      }
+    }
+  );
+});
+
+// ***** OTHER SUB-PAGES *****
+
 app.get(`/about`, (req, res) => {
   // not using the res.sendFile function
   //   res.sendFile(__dirname + `/views/medhub.html`);
@@ -401,6 +501,10 @@ app.get(`/logout`, (req, res) => {
       res.redirect("/");
     }
   });
+});
+
+app.get(`/deldocerror`, (req, res) => {
+  res.render("deldocerror.handlebars");
 });
 
 // ----- 418 ERROR
@@ -864,7 +968,7 @@ function initTableTreatment(mydb) {
       medname: "Lisinopril",
       meddose: "10 mg daily",
       pid: 2,
-      did: 1,
+      did: 4,
     },
     {
       treatid: "3",
@@ -944,7 +1048,7 @@ function initTableTreatment(mydb) {
       medname: "Ibuprofen",
       meddose: "400 mg every 8 hours as needed",
       pid: 10,
-      did: 3,
+      did: 4,
     },
     {
       treatid: "11",
