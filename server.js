@@ -860,7 +860,7 @@ app.post("/doctors/new", (req, res) => {
         if (error) {
           console.log("ERROR: ", error);
         } else {
-          console.log("Line added into the doctors table");
+          console.log(`Doctor ${doctorUserName} created!`);
           res.redirect("/doctors");
         }
       }
@@ -877,18 +877,36 @@ app.post("/doctors/modify/:doctorid", (req, res) => {
   const doctorLastName = req.body.doclname;
   const doctorSpec = req.body.docspec;
   const doctorEmail = req.body.docemail;
+  const doctorUserName = req.body.docusrname;
+  const doctorPassword = req.body.docpass;
 
-  db.run(
-    `UPDATE doctor SET dfname=?, dlname=?, dspec=?, demail=? WHERE did=?`,
-    [doctorFirstName, doctorLastName, doctorSpec, doctorEmail, doctorId],
-    (error) => {
-      if (error) {
-        console.log("ERROR: ", error);
-      } else {
-        res.redirect("/doctors");
-      }
+  // hashing the password before storing it in the db
+  bcrypt.hash(doctorPassword, saltRounds, function (err, hashedPass) {
+    if (err) {
+      console.log("---> Error while encrypting the password: ", err);
     }
-  );
+
+    db.run(
+      `UPDATE doctor SET dfname=?, dlname=?, dspec=?, demail=?, dusrname=?, dpass=? WHERE did=?`,
+      [
+        doctorFirstName,
+        doctorLastName,
+        doctorSpec,
+        doctorEmail,
+        doctorUserName,
+        hashedPass,
+        doctorId,
+      ],
+      (error) => {
+        if (error) {
+          console.log("ERROR: ", error);
+        } else {
+          console.log(`Doctor ${doctorUserName} edited!`);
+          res.redirect("/doctors");
+        }
+      }
+    );
+  });
 });
 
 // --------------------
