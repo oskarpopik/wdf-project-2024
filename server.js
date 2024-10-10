@@ -1,3 +1,8 @@
+// This is a medical database called MedHub
+// Without logging in you can see basic information and only the list of doctors (public data)
+// A doctor that is logged can browse and modify the list of patients and their treatments
+// The admin can browse and modify the list of patients, treatments and also the list of doctors
+
 // ----- GLOBAL DEFINITIONS
 const adminName = "admin";
 // password before hashing
@@ -601,37 +606,19 @@ app.post(`/login`, (req, res) => {
     return res.status(400).render("login.handlebars", loginErrorModel);
   }
 
-  // verification if the right username was provided
-  if (username !== adminName) {
-    console.log("Username was not admin");
-    const loginWrongUserModel = {
-      error: `Sorry, the username ${username} is not correct.`,
-      message: "",
-    };
-    return res.status(400).render("login.handlebars", loginWrongUserModel);
-  }
+  // verification if the admin username was provided
+  // if (username !== adminName) {
+  //   console.log("Username was not admin");
+  //   const loginWrongUserModel = {
+  //     error: `Sorry, the username ${username} is not correct.`,
+  //     message: "",
+  //   };
+  //   return res.status(400).render("login.handlebars", loginWrongUserModel);
+  // }
 
   // checking for admin credentials
   if (username === adminName) {
     console.log("The username is admin.");
-
-    //   if (password === adminPassword) {
-    //     console.log("The password for admin is correct.");
-    //     const loginSuccessModel = {
-    //       error: "",
-    //       message: "Welcome home Mr Admin!",
-    //     };
-    //     res.render("login.handlebars", loginSuccessModel);
-    //   } else {
-    //     const loginWrongPassModel = { error: "Wrong password.", message: "" };
-    //     res.status(400).render("login.handlebars", loginWrongPassModel);
-    //   }
-    // } else {
-    //   const loginWrongUserModel = {
-    //     error: `Sorry, the username ${username} is not correct.`,
-    //     message: "",
-    //   };
-    //   res.status(400).render("login.handlebars", loginWrongUserModel);
 
     // checking for admin credentials with bcrypt
     bcrypt.compare(password, adminPassword, (err, result) => {
@@ -653,17 +640,63 @@ app.post(`/login`, (req, res) => {
         console.log("Session information: " + JSON.stringify(req.session));
         // redirect after login
         return res.redirect("/");
-
-        // const loginSuccessModel = {
-        //   error: "",
-        //   message: "Welcome home Mr Admin!",
-        // };
-        // return res.render("login.handlebars", loginSuccessModel);
       } else {
         const loginWrongPassModel = { error: "Wrong password.", message: "" };
         return res.status(400).render("login.handlebars", loginWrongPassModel);
       }
     });
+  } else {
+    // if the user is not the admin, check for a doctor login
+    db.get(
+      "SELECT * FROM doctor WHERE dusrname = ?",
+      [username],
+      (err, doctor) => {
+        // if an error or not a doctor, show error
+        if (err || !doctor) {
+          console.log("Invalid username or password");
+          const loginWrongUserModel = {
+            error: `Invalid username or password.`,
+            message: "",
+          };
+          return res
+            .status(400)
+            .render("login.handlebars", loginWrongUserModel);
+        }
+
+        // compare doctors passwords with bcrypt
+        bcrypt.compare(password, doctor.dpass, (err, result) => {
+          if (err) {
+            const loginCompPassModel = {
+              error: "Error while comparing passwords: " + err,
+              message: "",
+            };
+            return res
+              .status(500)
+              .render("login.handlebars", loginCompPassModel);
+          }
+
+          if (result) {
+            console.log(`The password for ${username} is correct.`);
+            // SESSIONS
+            // saves this login information in the session-db
+            req.session.isAdmin = false;
+            req.session.isLoggedIn = true;
+            req.session.name = doctor.dusrname;
+            console.log("Session information: " + JSON.stringify(req.session));
+            // redirect after login
+            return res.redirect("/");
+          } else {
+            const loginWrongPassModel = {
+              error: "Wrong password.",
+              message: "",
+            };
+            return res
+              .status(400)
+              .render("login.handlebars", loginWrongPassModel);
+          }
+        });
+      }
+    );
   }
 });
 
@@ -804,19 +837,35 @@ app.post("/doctors/new", (req, res) => {
   const doctorLastName = req.body.doclname;
   const doctorSpec = req.body.docspec;
   const doctorEmail = req.body.docemail;
+  const doctorUserName = req.body.docusrname;
+  const doctorPassword = req.body.docpass;
 
-  db.run(
-    `INSERT INTO doctor (dfname, dlname, dspec, demail) VALUES (?, ?, ?, ?)`,
-    [doctorFirstName, doctorLastName, doctorSpec, doctorEmail],
-    (error) => {
-      if (error) {
-        console.log("ERROR: ", error);
-      } else {
-        console.log("Line added into the doctors table");
-        res.redirect("/doctors");
-      }
+  // hashing the password before storing it in the db
+  bcrypt.hash(doctorPassword, saltRounds, function (err, hashedPass) {
+    if (err) {
+      console.log("---> Error while encrypting the password: ", err);
     }
-  );
+
+    db.run(
+      `INSERT INTO doctor (dfname, dlname, dspec, demail, dusrname, dpass) VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        doctorFirstName,
+        doctorLastName,
+        doctorSpec,
+        doctorEmail,
+        doctorUserName,
+        hashedPass,
+      ],
+      (error) => {
+        if (error) {
+          console.log("ERROR: ", error);
+        } else {
+          console.log("Line added into the doctors table");
+          res.redirect("/doctors");
+        }
+      }
+    );
+  });
 });
 
 // modify an existing doctor from the data sent in the form
@@ -1007,6 +1056,9 @@ function initTableDoctor(mydb) {
       lname: "Watson",
       specialization: "General Practice",
       email: "john.watson@rjl.se",
+      username: "johnwatson",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 2,
@@ -1014,6 +1066,9 @@ function initTableDoctor(mydb) {
       lname: "Ramoray",
       specialization: "Neurology",
       email: "drake.ramoray@rjl.se",
+      username: "drakeramoray",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 3,
@@ -1021,6 +1076,9 @@ function initTableDoctor(mydb) {
       lname: "McCoy",
       specialization: "Surgery",
       email: "leonard.mccoy@rjl.se",
+      username: "leonardmccoy",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 4,
@@ -1028,6 +1086,9 @@ function initTableDoctor(mydb) {
       lname: "Quinn",
       specialization: "Family Medicine",
       email: "michaela.quinn@rjl.se",
+      username: "michaelaquinn",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 5,
@@ -1035,6 +1096,9 @@ function initTableDoctor(mydb) {
       lname: "House",
       specialization: "Diagnostic Medicine",
       email: "gregory.house@rjl.se",
+      username: "gregoryhouse",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 6,
@@ -1042,6 +1106,9 @@ function initTableDoctor(mydb) {
       lname: "Carter",
       specialization: "Emergency Medicine",
       email: "john.carter@rjl.se",
+      username: "johncarter",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 7,
@@ -1049,6 +1116,9 @@ function initTableDoctor(mydb) {
       lname: "Hibbert",
       specialization: "Pediatrics",
       email: "julius.hibbert@rjl.se",
+      username: "juliushibbert",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
     {
       docid: 8,
@@ -1056,12 +1126,15 @@ function initTableDoctor(mydb) {
       lname: "Rivera",
       specialization: "General Surgery",
       email: "nick.rivera@rjl.se",
+      username: "nickrivera",
+      // password: "TrustMeI'mADoctor!",
+      password: "$2b$14$VEXHTctV1qDlUiJXfCCZ.uoQt7WxfYHXy885ewy7hQK9H9QrhfOSe",
     },
   ];
 
   // creates table of doctors at startup
   mydb.run(
-    "CREATE TABLE doctor (did INTEGER PRIMARY KEY, dfname TEXT NOT NULL, dlname TEXT NOT NULL, dspec TEXT NOT NULL, demail TEXT NOT NULL)",
+    "CREATE TABLE doctor (did INTEGER PRIMARY KEY, dfname TEXT NOT NULL, dlname TEXT NOT NULL, dspec TEXT NOT NULL, demail TEXT NOT NULL, dusrname TEXT NOT NULL, dpass TEXT NOT NULL)",
     (error) => {
       if (error) {
         // tests error: display error
@@ -1073,13 +1146,15 @@ function initTableDoctor(mydb) {
         // insert the doctors
         doctor.forEach((oneDoctor) => {
           mydb.run(
-            "INSERT INTO doctor (did, dfname, dlname, dspec, demail) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO doctor (did, dfname, dlname, dspec, demail, dusrname, dpass) VALUES (?, ?, ?, ?, ?, ?, ?)",
             [
               oneDoctor.docid,
               oneDoctor.fname,
               oneDoctor.lname,
               oneDoctor.specialization,
               oneDoctor.email,
+              oneDoctor.username,
+              oneDoctor.password,
             ],
             (error) => {
               if (error) {

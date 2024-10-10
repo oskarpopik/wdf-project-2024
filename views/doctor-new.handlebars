@@ -34,6 +34,16 @@
         </div>
 
         <div>
+          <label for="docusrname">Username:</label>
+          <input type="text" id="docusrname" name="docusrname" required value="{{doctor.dusrname}}" />
+        </div>
+
+        <div>
+          <label for="docpassword">Password:</label>
+          <input type="password" id="docpassword" name="docpass" required value="{{doctor.dpassword}}" />
+        </div>
+
+        <div>
           <button type="submit">
             {{#if doctor.did}}Update doctor{{else}}Add doctor{{/if}}
           </button>
