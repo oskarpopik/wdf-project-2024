@@ -1,3 +1,11 @@
+/* GENERAL */
+html.wf-active * {
+  font-family: "ff-scala-sans-pro", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--navy-blue);
+}
+
 * {
   font-family: ff-scala-sans-pro, sans-serif;
   font-weight: 400;
@@ -23,15 +31,26 @@ body {
 }
 
 h1 {
-  font-family: ff-scala, sans-serif;
+  font-family: "ff-scala", sans-serif;
   font-size: 1.5rem;
-  margin: 1vw;
+  /* margin: 1vw; */
   font-weight: 700;
 }
 
 h2 {
   font-size: 1.5rem;
-  margin: 1vw;
+  /* margin: 1vw; */
+  font-weight: 700;
+}
+
+h3 {
+  font-family: "ff-scala", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -45,10 +64,27 @@ a:hover {
   font-weight: 700;
 }
 
+.logo {
+  width: 5%;
+  border-radius: 15%;
+}
+
+/* TREATMENTS */
 .treatment-image {
   width: 5%;
 }
 
+#treatment-patient-name {
+  /* font-weight: 700; */
+  color: var(--pink);
+}
+
+#treatment-doctor-name {
+  /* font-weight: 700; */
+  color: var(--dark-blue);
+}
+
+/* PATIENT */
 .patient-image {
   width: 10%;
 }
@@ -63,10 +99,12 @@ a:hover {
   font-weight: 700;
 }
 
+/* DOCTOR */
 .doctor-image {
   width: 10%;
 }
 
+/* LOGIN */
 .login-error {
   font-weight: 700;
   color: var(--dark-red);
@@ -77,15 +115,7 @@ a:hover {
   color: var(--dark-red);
 }
 
-#treatment-patient-name {
-  /* font-weight: 700; */
-  color: var(--pink);
-}
-
-#treatment-doctor-name {
-  /* font-weight: 700; */
-  color: var(--dark-blue);
-}
+/* NEW, MODIFY, DELETE */
 
 .new-entry {
   color: var(--dark-blue);

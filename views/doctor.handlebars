@@ -2,16 +2,17 @@
 <div class="doctor-details">
   <!-- Doctor images were generated using generative AI tool Adobe Firefly -->
   <!-- Images for initial doctor list were generated, manually added doctors use a placeholder image -->
-    <img
+   <div class="card-container">
+     <img
   src="{{#if (gt doctor.did 8)}}/img/docid-0.jpg{{else}}/img/docid-{{doctor.did}}.jpg{{/if}}"
   alt="Picture of the doctor {{doctor.dfname}} {{doctor.dlname}}"
   class="doctor-image"
 />
-  {{doctor.dfname}}
-  {{doctor.dlname}},
-  {{doctor.dspec}},
-  {{doctor.demail}}
-</div>
+<div class="card-info-container">
+  <h4>{{doctor.dfname}} {{doctor.dlname}}</h4>
+  <p>{{doctor.dspec}}</p>
+  <p>{{doctor.demail}}</p>
+</div> 
 
 <div>
   <a href="/doctors">Back to Doctors</a>
