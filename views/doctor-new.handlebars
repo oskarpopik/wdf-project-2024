@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-md-8">
       {{#if doctor.did}}
-        <h1>Modify doctor</h1>
+        <h1>Modify doctor information</h1>
       {{else}}
         <h1>New doctor</h1>
       {{/if}}
@@ -60,7 +60,10 @@
           </div>
         </form>
 
-        <a class="btn btn-secondary btn-sm mt-3 mb-3" href="/doctors">Back to Doctors</a>
+        {{!-- The use of history.back() adapted from stackoverflow
+        Source: (Bajrang, 2012, "How to make an HTML back link?", https://stackoverflow.com/a/8814534) --}}
+        <a class="btn btn-secondary btn-sm mt-3 mb-3" href="javascript:history.back()">Back</a>
+
       </div>
     </div>
   </div>

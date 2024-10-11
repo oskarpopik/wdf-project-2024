@@ -1,23 +1,54 @@
-<h2>Treatment details</h2>
-<div class="treatment-details">
-  <span id="treatment-patient-name">{{treatment.pat_fname}}
-    {{treatment.pat_lname}}
-  </span>
-  //
-  {{treatment.tstart}}
-  //
-  {{treatment.tend}}
-  //
-  {{treatment.tdesc}}
-  //
-  {{treatment.tmed}}
-  ({{treatment.tdose}}) // Attending physician:
-  <span id="treatment-doctor-name">
-    {{treatment.doc_fname}}
-    {{treatment.doc_lname}}
-  </span>
-</div>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
 
-<div>
-  <a href="/treatments">Back to Treatments</a>
+      <h1>Treatment details</h1>
+
+      <div class="card card-treatment">
+        <div class="card-header">
+          <h5>Patient:
+            <a href="/patients/{{treatment.pid}}">{{treatment.pat_fname}}
+              {{treatment.pat_lname}}</a></h5>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Attending Physician:</th>
+                <td><a href="/doctors/{{treatment.did}}">{{treatment.doc_fname}}
+                    {{treatment.doc_lname}}</a></td>
+              </tr>
+              <tr>
+                <th scope="row">Start Date:</th>
+                <td>{{treatment.tstart}}</td>
+              </tr>
+              <tr>
+                <th scope="row">End Date:</th>
+                <td>{{treatment.tend}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Description:</th>
+                <td>{{treatment.tdesc}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Medicine:</th>
+                <td>{{treatment.tmed}} ({{treatment.tdose}})</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+      <div>
+        {{! The use of history.back() adapted from stackoverflow
+        Source: (Bajrang, 2012, "How to make an HTML back link?", https://stackoverflow.com/a/8814534) }}
+        <a
+          class="btn btn-secondary btn-sm mt-3 mb-3"
+          href="javascript:history.back()"
+        >Back</a>
+      </div>
+
+    </div>
+  </div>
 </div>

@@ -4,7 +4,7 @@
 // The admin can browse and modify the list of patients, treatments and also the list of doctors
 // Pagination and SQL INNER JOIN is implemented for the display of treatments
 
-// ----- GLOBAL DEFINITIONS
+// ----- GLOBAL DEFINITIONS ------
 const adminName = "admin";
 // password before hashing
 // const adminPassword = "I<3LicensePlates!";

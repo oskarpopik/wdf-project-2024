@@ -3,7 +3,12 @@
     <div class="col-12 col-sm-10 col-md-8">
       <h1>400 Bad request</h1>
       <p>Cannot delete a doctor with an associated treatment!</p>
-      <a href="/doctors">Back to Doctors</a>
+      {{! The use of history.back() adapted from stackoverflow
+      Source: (Bajrang, 2012, "How to make an HTML back link?", https://stackoverflow.com/a/8814534) }}
+      <a
+        class="btn btn-secondary btn-sm mt-3 mb-3"
+        href="javascript:history.back()"
+      >Back</a>
     </div>
   </div>
 </div>

@@ -61,21 +61,30 @@ h4 {
 
 /* TREATMENTS */
 .treatment-image {
-  width: 5%;
+  /* keeps the aspect ratio */
+  height: auto;
+  max-height: 120px;
 }
 
-#treatment-patient-name {
-  /* font-weight: 700; */
-  color: var(--pink);
+.card-text {
+  margin-block-end: 0.25em;
+  /* margin-block-start: 0; */
 }
 
-#treatment-doctor-name {
-  /* font-weight: 700; */
-  color: var(--dark-blue);
+.card-body {
+  padding: 0.25em;
+}
+
+.pagination {
+  margin-right: 20px;
+}
+
+.card.card-treatment {
+  max-width: 450px;
+  width: 100%;
 }
 
 /* PATIENT */
-
 .patient-male {
   color: var(--green);
   font-weight: 700;
@@ -87,7 +96,6 @@ h4 {
 }
 
 /* PATIENT AND DOCTOR CARDS */
-
 .card {
   max-width: 300px;
 }
@@ -106,7 +114,6 @@ h4 {
 }
 
 /* NAVIGATION TOP MENU */
-
 .container-fluid {
   padding-left: 2vw;
   padding-right: 2vw;

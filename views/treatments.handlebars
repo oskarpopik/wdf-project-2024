@@ -1,56 +1,67 @@
-<p>This is the treatments site</p>
-<h2>List of treatments:</h2>
-<div class="treatment-new">
-  {{#if session.isLoggedIn}}
-    <a href="/treatments/new" class="new-entry">New treatment</a>
-  {{/if}}
-</div>
-<div class="treatment-list">
-  <ul>
-    {{#each treatment}}
-      <li>
-        <a href="/treatments/{{tid}}">
-        <!-- Treatment illustration was generated using generative AI tool Adobe Firefly -->
-  <img
-    src="/img/treatment.png"
-    alt="Illustration of a treatment"
-    class="treatment-image"
-  />
-          <span id="treatment-patient-name">
-            {{pat_fname}}
-            {{pat_lname}}
-          </span>
-          //
-          {{tstart}}
-        </a>
-        // Attending physician:
-        <span id="treatment-doctor-name">
-          {{doc_fname}}
-          {{doc_lname}}
-        </span>
-        {{#if ../session.isLoggedIn}}
-        --- 
-        <a href="/treatments/modify/{{tid}}" class="modify-entry">Modify</a>
-        --- 
-        <a href="/treatments/delete/{{tid}}" class="delete-entry">Delete</a>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
+      
+      <h1>List of treatments:</h1>
+      
+      <div class="treatment-list">
+        <ul class="list-unstyled">
+          {{#each treatment}}
+            <li>
+              <a href="/treatments/{{tid}}" class="text-decoration-none">
+              {{!-- The following 23 lines of code were adapted from Get Bootstrap Tutorials https://getbootstrap.com/docs/5.0/components/card/#horizontal Accessed: 2024-10-10 --}}
+                <div class="card mb-3" style="max-width: 450px;">
+                  <div class="row g-0">
+                    <div class="col-md-3 d-none d-md-block">
+                      <img src="/img/treatment.png" alt="Illustration of a treatment" class="img-fluid treatment-image rounded-start mx-auto" />
+                    </div>
+                    <div class="col-md-9">
+                      <div class="card-body">
+                        <p class="card-text">Patient name: 
+                          <span class="fw-bold">{{pat_fname}} {{pat_lname}}</span>
+                        </p>
+                        <p class="card-text">Treatment start date: 
+                          <span class="fw-bold">{{tstart}}</span>
+                        </p>
+                        <p class="card-text">Description: 
+                          <span class="fw-bold">{{tdesc}}</span>
+                        </p>
+                        <p class="card-text">Attending physician: 
+                          <span class="fw-bold">{{doc_fname}} {{doc_lname}}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              {{#if ../session.isLoggedIn}}
+                <a href="/treatments/modify/{{tid}}" class="btn btn-warning btn-sm mt-1 mb-5 me-1 ms-1">Modify</a>
+                <a href="/treatments/delete/{{tid}}" class="btn btn-danger btn-sm mt-1 mb-5 me-1 ms-1">Delete</a>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+
+      {{!-- Pagination --}}
+      <div class="pagination">
+        {{#if (gt currentPage 1)}}
+          <a class="pagination" href="?page={{subtract currentPage 1}}">Previous</a>
         {{/if}}
-      </li>
-    {{/each}}
-  </ul>
-</div>
 
-{{!-- The following 14 lines of code were adapted from ChatGTP https://chatgpt.com/share/66ffceef-952c-800b-ad3a-da3c820b91b8 Accessed: 2024-10-04 --}}
-<div class="pagination">
-    {{!-- Previous button --}}
-    {{#if (gt currentPage 1)}}
-        <a href="?page={{subtract currentPage 1}}">Previous</a>
-    {{/if}}
+        <span class="pagination">Page {{currentPage}} of {{totalPages}}</span>
 
-    {{!-- Show page numbers --}}
-    <span>Page {{currentPage}} of {{totalPages}}</span>
+        {{#if (lt currentPage totalPages)}}
+          <a class="pagination" href="?page={{add currentPage 1}}">Next</a>
+        {{/if}}
+      </div>
 
-    {{!-- Next button --}}
-    {{#if (lt currentPage totalPages)}}
-        <a href="?page={{add currentPage 1}}">Next</a>
-    {{/if}}
+      <div class="treatment-new">
+        {{#if session.isLoggedIn}}
+          <a class="btn btn-success btn-sm mt-4 mb-2" href="/treatments/new" class="new-entry">New treatment</a>
+        {{/if}}
+      </div>
+
+    </div>
+  </div>
 </div>
