@@ -2,6 +2,7 @@
 // Without logging in you can see basic information and only the list of doctors (public data)
 // A doctor that is logged can browse and modify the list of patients and their treatments
 // The admin can browse and modify the list of patients, treatments and also the list of doctors
+// Pagination and SQL INNER JOIN is implemented for the display of treatments
 
 // ----- GLOBAL DEFINITIONS
 const adminName = "admin";

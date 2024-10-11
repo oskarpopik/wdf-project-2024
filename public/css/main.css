@@ -26,8 +26,8 @@ html {
 
 body {
   background-color: var(--background-blue);
-  margin-left: 2vw;
-  margin-right: 2vw;
+  /* margin-left: 2vw;
+  margin-right: 2vw; */
 }
 
 h1 {
@@ -54,7 +54,7 @@ h4 {
   font-weight: 700;
 }
 
-a {
+/* a {
   text-decoration: none;
   font-weight: 700;
 }
@@ -62,10 +62,10 @@ a {
 a:hover {
   text-decoration: underline;
   font-weight: 700;
-}
+} */
 
 .logo {
-  width: 5%;
+  width: 40px;
   border-radius: 15%;
 }
 
@@ -110,9 +110,59 @@ a:hover {
   color: var(--dark-red);
 }
 
+/* NAVIGATION TOP MENU */
+
+.container-fluid {
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+
+.navbar-custom {
+  /* nav menu background color */
+  background-color: var(--dark-blue);
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+
+.navbar-custom .nav-link {
+  /* nav menu link color */
+  color: var(--light-blue);
+}
+
+.navbar-custom .nav-link:hover {
+  /* nav menu hover link color */
+  color: var(--normal-blue);
+}
+
+#menu-login {
+  /* nav menu user greeting color */
+  color: var(--navy-blue);
+  display: flex;
+  /* align-items: center; */
+  margin-left: auto;
+  /* padding-left: 2vw; */
+}
+
+.login-section {
+  display: flex;
+  align-items: center;
+}
+
+#menu-login span {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+#login-link {
+  padding-left: 10px;
+}
+
 #menu-user-name {
-  font-weight: 700;
+  /* nav menu user color */
   color: var(--dark-red);
+  margin-left: 3px;
+  margin-right: 3px;
+  font-weight: 700;
 }
 
 /* NEW, MODIFY, DELETE */

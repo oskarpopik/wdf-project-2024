@@ -15,29 +15,65 @@
   </head>
   <body>
     <header>
-      <nav>
-        <ul>
-          <!-- MedHub logo was generated using generative AI tool Adobe Firefly -->
-          <img class="logo" src="/img/logo-bg.jpg" />
-          <li><a href="/">Home</a></li>
-          {{#if session.isLoggedIn}}
-            <li><a href="/patients">Patients</a></li>
-          {{/if}}
-          <li><a href="/doctors">Doctors</a></li>
-          {{#if session.isLoggedIn}}
-            <li><a href="/treatments">Treatments</a></li>
-          {{/if}}
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-          {{#if session.isLoggedIn}}
-            <li id="menu-login">Hej
-              <span id="menu-user-name">{{session.name}}</span>! /
-              <a href="/logout">Logout</a></li>
-          {{else}}
-            <li id="menu-login"><a href="/login">Login</a></li>
-          {{/if}}
-        </ul>
+      <!-- The bootstrap navbar was done by adapting a W3School tutorial: https://www.w3schools.com/bootstrap5/bootstrap_navbar.php Accessed on 2024-10-11 -->
+      <nav class="navbar navbar-expand-sm navbar-dark navbar-custom">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">
+            <img class="logo" alt="MedHub logo" src="/img/logo-bg.jpg" />
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapsibleNavbar"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+              <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+              {{#if session.isLoggedIn}}
+                <li class="nav-item"><a
+                    class="nav-link"
+                    href="/patients"
+                  >Patients</a></li>
+              {{/if}}
+              <li class="nav-item"><a
+                  class="nav-link"
+                  href="/doctors"
+                >Doctors</a></li>
+              {{#if session.isLoggedIn}}
+                <li class="nav-item"><a
+                    class="nav-link"
+                    href="/treatments"
+                  >Treatments</a></li>
+              {{/if}}
+              <li class="nav-item"><a
+                  class="nav-link"
+                  href="/about"
+                >About</a></li>
+              <li class="nav-item"><a
+                  class="nav-link"
+                  href="/contact"
+                >Contact</a></li>
+            </ul>
+            <ul class="navbar-nav" id="menu-login">
+              {{#if session.isLoggedIn}}
+                <li class="nav-item login-section">
+                  Hej
+                  <span id="menu-user-name">{{session.name}}</span>!
+                  <a class="nav-link" id="login-link" href="/logout">Logout</a>
+                </li>
+              {{else}}
+                <li class="nav-item login-section">
+                  <a class="nav-link" href="/login">Login</a>
+                </li>
+              {{/if}}
+            </ul>
+          </div>
+        </div>
       </nav>
+
     </header>
     {{{body}}}
   </body>
