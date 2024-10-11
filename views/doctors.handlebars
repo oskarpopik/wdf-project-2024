@@ -1,22 +1,31 @@
-<p>This is the doctors site</p>
-<h2>List of doctors:</h2>
-<div class="doctor-new"></div>
-  {{#if session.isAdmin}}
-    <a href="/doctors/new" class="new-entry">New doctor</a>
-  {{/if}}
-</div>
-<div class="doctor-list">
-  <ol>
-    {{#each doctor}}
-      <li>
-        <a href="/doctors/{{did}}">{{dfname}} {{dlname}}</a>
-        {{#if ../session.isAdmin}}
-        --- 
-        <a href="/doctors/modify/{{did}}" class="modify-entry">Modify</a>
-        --- 
-        <a href="/doctors/delete/{{did}}" class="delete-entry">Delete</a>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
+      
+      <h1>List of doctors:</h1>
+      
+      <div class="doctor-list">
+        <ol>
+          {{#each doctor}}
+            <li>
+              <a href="/doctors/{{did}}">{{dfname}} {{dlname}}</a>
+              {{#if ../session.isAdmin}}
+              
+              <a href="/doctors/modify/{{did}}" class="btn btn-warning btn-sm mt-1 mb-1 me-6 ms-3">Modify</a>
+            
+              <a href="/doctors/delete/{{did}}" class="btn btn-danger btn-sm mt-1 mb-1 me-3 ms-3">Delete</a>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ol>
+      </div>
+
+      <div class="doctor-new">
+        {{#if session.isAdmin}}
+          <a class="btn btn-success btn-sm mt-1 mb-3" href="/doctors/new">New doctor</a>
         {{/if}}
-      </li>
-    {{/each}}
-  </ol>
+      </div>
+
+    </div>
+  </div> 
 </div>

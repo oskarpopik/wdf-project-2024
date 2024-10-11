@@ -1,19 +1,25 @@
-<h2>Doctor details</h2>
-<div class="doctor-details">
-  <!-- Doctor images were generated using generative AI tool Adobe Firefly -->
-  <!-- Images for initial doctor list were generated, manually added doctors use a placeholder image -->
-   <div class="card-container">
-     <img
-  src="{{#if (gt doctor.did 8)}}/img/docid-0.jpg{{else}}/img/docid-{{doctor.did}}.jpg{{/if}}"
-  alt="Picture of the doctor {{doctor.dfname}} {{doctor.dlname}}"
-  class="doctor-image"
-/>
-<div class="card-info-container">
-  <h4>{{doctor.dfname}} {{doctor.dlname}}</h4>
-  <p>{{doctor.dspec}}</p>
-  <p>{{doctor.demail}}</p>
-</div> 
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
 
-<div>
-  <a href="/doctors">Back to Doctors</a>
+      <div class="container">
+        <h1>{{doctor.dfname}} {{doctor.dlname}}</h1>
+        <div class="card">
+          <img 
+            class="card-img-top doctor-image img-fluid" 
+            src="{{#if (gt doctor.did 8)}}/img/docid-0.jpg{{else}}/img/docid-{{doctor.did}}.jpg{{/if}}"
+            alt="Picture of the doctor {{doctor.dfname}} {{doctor.dlname}}">
+          <div class="card-body">
+            <p class="card-text">Specialization: {{doctor.dspec}}</p>
+            <p class="card-text">Email: <a href="mailto: {{doctor.demail}}">{{doctor.demail}}</a></p>
+          </div>
+        </div>
+
+        <div>
+          <a class="btn btn-secondary btn-sm mt-3 mb-3" href="/doctors">Back to Doctors</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

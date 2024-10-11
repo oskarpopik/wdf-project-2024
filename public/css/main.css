@@ -54,16 +54,6 @@ h4 {
   font-weight: 700;
 }
 
-/* a {
-  text-decoration: none;
-  font-weight: 700;
-}
-
-a:hover {
-  text-decoration: underline;
-  font-weight: 700;
-} */
-
 .logo {
   width: 40px;
   border-radius: 15%;
@@ -85,9 +75,6 @@ a:hover {
 }
 
 /* PATIENT */
-.patient-image {
-  width: 10%;
-}
 
 .patient-male {
   color: var(--green);
@@ -99,9 +86,17 @@ a:hover {
   font-weight: 700;
 }
 
-/* DOCTOR */
-.doctor-image {
-  width: 10%;
+/* PATIENT AND DOCTOR CARDS */
+
+.card {
+  max-width: 300px;
+}
+
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 /* LOGIN */
@@ -146,6 +141,7 @@ a:hover {
 .login-section {
   display: flex;
   align-items: center;
+  color: var(--light-blue);
 }
 
 #menu-login span {
@@ -159,34 +155,8 @@ a:hover {
 
 #menu-user-name {
   /* nav menu user color */
-  color: var(--dark-red);
+  color: var(--navy-blue);
   margin-left: 3px;
   margin-right: 3px;
   font-weight: 700;
-}
-
-/* NEW, MODIFY, DELETE */
-
-.new-entry {
-  color: var(--dark-blue);
-}
-
-.new-entry:hover {
-  color: var(--navy-blue);
-}
-
-.modify-entry {
-  color: var(--green);
-}
-
-.modify-entry:hover {
-  color: var(--navy-blue);
-}
-
-.delete-entry {
-  color: var(--dark-red);
-}
-
-.delete-entry:hover {
-  color: var(--navy-blue);
 }

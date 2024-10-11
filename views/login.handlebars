@@ -6,14 +6,28 @@
         <form action="/login" method="post">
           <div id="login-username">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" />
+            <input
+              class="form-control form-control-sm"
+              type="text"
+              id="username"
+              name="username"
+            />
           </div>
           <div id="login-password">
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" />
+            <input
+              class="form-control form-control-sm"
+              type="password"
+              id="password"
+              name="password"
+            />
           </div>
           <div id="login-button">
-            <input type="submit" value="Login" />
+            <input
+              class="btn btn-primary btn-sm mt-3 mb-3"
+              type="submit"
+              value="Login"
+            />
           </div>
         </form>
         {{#if error}}

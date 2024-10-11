@@ -1,23 +1,31 @@
-<p>This is the patients site</p>
-<h2>List of patients:</h2>
-<div class="patient-new">
-  {{#if session.isLoggedIn}}
-    <a href="/patients/new" class="new-entry">New patient</a>
-  {{/if}}
-</div>
-<div class="patient-list">
-  <ol>
-    {{!-- {{patient}} --}}
-    {{#each patient}}
-      <li>
-        <a href="/patients/{{pid}}">{{pfname}} {{plname}} </a>
-        {{#if ../session.isLoggedIn}}
-        ---
-        <a href="/patients/modify/{{pid}}" class="modify-entry">Modify</a>
-        ---
-        <a href="/patients/delete/{{pid}}" class="delete-entry">Delete</a>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
+      
+      <h1>List of patients:</h1>
+
+      <div class="patient-list">
+        <ol>
+          {{#each patient}}
+            <li>
+              <a href="/patients/{{pid}}">{{pfname}} {{plname}}</a>
+              {{#if ../session.isLoggedIn}}
+
+              <a href="/patients/modify/{{pid}}" class="btn btn-warning btn-sm mt-1 mb-1 me-6 ms-3">Modify</a>
+
+              <a href="/patients/delete/{{pid}}" class="btn btn-danger btn-sm mt-1 mb-1 me-3 ms-3">Delete</a>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ol>
+      </div> 
+
+      <div class="patient-new">
+        {{#if session.isLoggedIn}}
+          <a class="btn btn-success btn-sm mt-1 mb-3" href="/patients/new">New patient</a>
         {{/if}}
-      </li>
-    {{/each}}
-  </ol>
-</div>
+      </div> 
+
+    </div> 
+  </div> 
+</div> 

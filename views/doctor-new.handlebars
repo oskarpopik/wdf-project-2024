@@ -1,54 +1,67 @@
-{{#if doctor.did}}
-  <h2>Modify doctor</h2>
-{{else}}
-  <h2>New doctor</h2>
-{{/if}}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
+      {{#if doctor.did}}
+        <h1>Modify doctor</h1>
+      {{else}}
+        <h1>New doctor</h1>
+      {{/if}}
 
-  <div class="doctor-form">
-    
-    {{#if doctor.did}}
-      <form action="/doctors/modify/{{doctor.did}}" method="POST">
-    {{else}}
-      <form action="/doctors/new" method="POST">
-    {{/if}}
+      <div class="doctor-form">
+        {{#if doctor.did}}
+          <form action="/doctors/modify/{{doctor.did}}" method="POST">
+        {{else}}
+          <form action="/doctors/new" method="POST">
+        {{/if}}
 
-        <div>
-          <label for="docfname">First name:</label>
-          <input type="text" id="docfname" name="docfname" required 
-                value="{{doctor.dfname}}" />
-        </div>
+          <div>
+            <label for="docfname">First name:</label>
+            <input class="form-control form-control-sm" type="text" id="docfname" name="docfname" required 
+                   value="{{doctor.dfname}}" />
+          </div>
 
-        <div>
-          <label for="doclname">Last name:</label>
-          <input type="text" id="doclname" name="doclname" required value="{{doctor.dlname}}" />
-        </div>
+          <div>
+            <label for="doclname">Last name:</label>
+            <input class="form-control form-control-sm" type="text" id="doclname" name="doclname" required 
+                   value="{{doctor.dlname}}" />
+          </div>
 
-        <div>
-          <label for="docspec">Specialization:</label>
-          <input type="text" id="docspec" name="docspec" required value="{{doctor.dspec}}" />
-        </div>
+          <div>
+            <label for="docspec">Specialization:</label>
+            <input class="form-control form-control-sm" type="text" id="docspec" name="docspec" required 
+                   value="{{doctor.dspec}}" />
+          </div>
 
-         <div>
-          <label for="docemail">Email:</label>
-          <input type="text" id="docemail" name="docemail" required value="{{doctor.demail}}" />
-        </div>
+          <div>
+            <label for="docemail">Email:</label>
+            <input class="form-control form-control-sm" type="text" id="docemail" name="docemail" required 
+                   value="{{doctor.demail}}" />
+          </div>
 
-        <div>
-          <label for="docusrname">Username:</label>
-          <input type="text" id="docusrname" name="docusrname" required value="{{doctor.dusrname}}" />
-        </div>
+          <div>
+            <label for="docusrname">Username:</label>
+            <input class="form-control form-control-sm" type="text" id="docusrname" name="docusrname" required 
+                   value="{{doctor.dusrname}}" />
+          </div>
 
-        <div>
-          <label for="docpassword">Password:</label>
-          <input type="password" id="docpassword" name="docpass" required value="{{doctor.dpassword}}" />
-        </div>
+          <div>
+            <label for="docpassword">Password:</label>
+            <input class="form-control form-control-sm" type="password" id="docpassword" name="docpass" required 
+                   value="{{doctor.dpassword}}" />
+          </div>
 
-        <div>
-          <button type="submit">
-            {{#if doctor.did}}Update doctor{{else}}Add doctor{{/if}}
-          </button>
-        </div>
-      </form>
+          <div>
+            <button class="btn btn-success btn-sm mt-3 mb-3" type="submit">
+              {{#if doctor.did}}Update doctor{{else}}Add doctor{{/if}}
+            </button>
+             {{!-- <button type="submit">
+              {{#if doctor.did}}Update doctor{{else}}Add doctor{{/if}}
+            </button> --}}
+          </div>
+        </form>
 
-      <a href="/doctors">Back to Doctors</a>
+        <a class="btn btn-secondary btn-sm mt-3 mb-3" href="/doctors">Back to Doctors</a>
+      </div>
+    </div>
   </div>
+</div>

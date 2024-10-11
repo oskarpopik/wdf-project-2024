@@ -1,4 +1,4 @@
-<h2>Patient details</h2>
+{{!-- <h2>Patient details</h2>
 <div class="patient-details">
   <!-- Patient images were generated using generative AI tool Adobe Firefly -->
   <!-- Images for initial patient list were generated, manually added patients use a placeholder image -->
@@ -23,4 +23,39 @@
 
 <div>
   <a href="/patients">Back to Patients</a>
+</div> --}}
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8">
+
+      <div class="container">
+        <h1>{{patient.pfname}} {{patient.plname}}</h1>
+        <div class="card">
+          <img 
+            class="card-img-top patient-image img-fluid" 
+            src="{{#if (gt patient.pid 12)}}/img/patid-0.jpg{{else}}/img/patid-{{patient.pid}}.jpg{{/if}}"
+            alt="Picture of the patient {{patient.pfname}} {{patient.plname}}">
+          <div class="card-body">
+            <p class="card-text">Age: {{patient.page}} years old</p>
+            <p class="card-text">
+              Gender: 
+              {{#if (isEqual patient.pgender "Male")}} 
+                <span class="patient-male">{{patient.pgender}}</span>
+              {{else}}
+                <span class="patient-female">{{patient.pgender}}</span>
+              {{/if}}
+            </p>
+            <p class="card-text">Address: {{patient.pcontact}}</p>
+            <p class="card-text">Phone: {{patient.pphone}}</p>
+          </div>
+        </div>
+
+        <div>
+          <a class="btn btn-secondary btn-sm mt-3 mb-3" href="/patients">Back to Patients</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
